@@ -119,11 +119,11 @@ int item_shop(int first_id, ...) {
     }
 
     if (count == 0) { echof("売り出すアイテムがありません。\n"); return 0; }
-    system("cls");
+    cls();
     echof("いらっしゃいませ！\nアイテムショップへようこそ");
 
     while (1) {
-        system("cls");
+        cls();
         print_item_table(items, count);
         printf("購入するアイテムを選択してください > ");
         if (scanf("%d", &choice) != 1) { while (getchar() != '\n'); continue; }
@@ -133,15 +133,15 @@ int item_shop(int first_id, ...) {
         if (choice < 1 || choice > count) continue;
 
         choice--;
-        if (money < items[choice].price) { echof("\nお金が足りません！\n"); system("cls"); }
+        if (money < items[choice].price) { echof("\nお金が足りません！\n"); cls(); }
         else {
             money -= items[choice].price;
             can_item[items[choice].id]++;
             echof("\n%s を購入しました！\n", items[choice].name);
-            system("cls");
+            cls();
         }
     }
-    system("cls");
+    cls();
     return 1;
 }
 
@@ -160,11 +160,11 @@ int weapon_shop(int first_id, ...) {
     }
 
     if (count == 0) { echof("売り出す武器がありません。\n"); return 0; }
-    system("cls");
+    cls();
     echof("いらっしゃいませ！\n武器ショップへようこそ");
 
     while (1) {
-        system("cls");
+        cls();
         print_weapon_table(weapons, count);
         printf("購入する武器を選択してください > ");
         if (scanf("%d", &choice) != 1) { while (getchar() != '\n'); continue; }
@@ -174,16 +174,16 @@ int weapon_shop(int first_id, ...) {
         if (choice < 1 || choice > count) continue;
 
         choice--;
-        if (can_weapon[weapons[choice].id]) { echof("\n既に所持しています！\n"); system("cls"); }
-        else if (money < weapons[choice].price) { echof("\nお金が足りません！\n"); system("cls"); }
+        if (can_weapon[weapons[choice].id]) { echof("\n既に所持しています！\n"); cls(); }
+        else if (money < weapons[choice].price) { echof("\nお金が足りません！\n"); cls(); }
         else {
             money -= weapons[choice].price;
             can_weapon[weapons[choice].id] = 1;
             echof("\n%s を購入しました！\n", weapons[choice].name);
-            system("cls");
+            cls();
         }
     }
-    system("cls");
+    cls();
     return 1;
 }
 
@@ -205,11 +205,11 @@ int all_shop(int first_item_id, ...) {
     }
     va_end(args);
 
-    system("cls");
+    cls();
     echof("いらっしゃいませ！\nよろず屋へようこそ");
 
     while (1) {
-        system("cls");
+        cls();
         printf("==================================================\n");
         printf("               よろず屋 (所持金: %d G)\n", money);
         printf("==================================================\n");
@@ -223,7 +223,7 @@ int all_shop(int first_item_id, ...) {
 
         if (select_type == 1) {
             while (1) {
-                system("cls");
+                cls();
                 print_item_table(items, item_count);
                 printf("購入するアイテムを選択してください > ");
                 if (scanf("%d", &choice) != 1) { while (getchar() != '\n'); continue; }
@@ -241,7 +241,7 @@ int all_shop(int first_item_id, ...) {
         }
         else if (select_type == 2) {
             while (1) {
-                system("cls");
+                cls();
                 print_weapon_table(weapons, weapon_count);
                 printf("購入する武器を選択してください > ");
                 if (scanf("%d", &choice) != 1) { while (getchar() != '\n'); continue; }
@@ -259,6 +259,6 @@ int all_shop(int first_item_id, ...) {
             }
         }
     }
-    system("cls");
+    cls();
     return 1;
 }

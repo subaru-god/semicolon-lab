@@ -2,6 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 
+/* heder.h で宣言されているのでコメントアウトして動作確認
 extern char name[];
 extern char call_name[];
 extern char user_select;
@@ -28,9 +29,10 @@ extern int item_shop(int first_id, ...);
 extern int weapon_shop(int first_id, ...);
 extern int all_shop(int first_id, ...);
 extern void start_map_mode(const char* filename, int spawn_id, int has_enemy, ...);
+*/
 
 void set_up(void) {
-    system("cls");
+    cls();
     play_bgm("set_up.mp3");
     echof("【Re:魔王討伐は簡単だった ～そんなことはない！～ 】へ ようこそ！（進むにはEnterキーを押してください）");
     echof("\nまずは名前を決めます。");
@@ -69,7 +71,7 @@ void set_up(void) {
 }
 
 void prologue(void) {
-    system("cls");
+    cls();
     do {
         echof("...%s ..%s..! 起きて%s!!!!\n", name, name, name);
         printf("起きますか？y/n：");
@@ -103,7 +105,7 @@ void prologue(void) {
 }
 
 int story_1(void) {
-    system("cls");
+    cls();
     echof("おはよう！%s", call_name);
     echof("ついに旅立つ日が来たわね。これはこの村の人全員からの気持ちよ。");
     echof("\n300Gを受け取りました");

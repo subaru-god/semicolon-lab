@@ -108,7 +108,7 @@ static int load_map_item_info(int item_id, MapItemData* out_item) {
 static void use_map_item(void) {
     MapItemData items[100];
     int count = 0, i, choice;
-    system("cls");
+    cls();
 
     for (i = 1; i < 1000; i++) {
         if (can_item[i] >= 1) {
@@ -122,7 +122,7 @@ static void use_map_item(void) {
 
     if (count == 0) {
         echof("\n移動中に使えるアイテムを持っていません！\n");
-        system("cls");
+        cls();
         return;
     }
 
@@ -132,14 +132,14 @@ static void use_map_item(void) {
     }
     printf("0. 戻る\n使用するアイテムを選択してください > ");
 
-    if (scanf("%d", &choice) != 1) { while (getchar() != '\n'); system("cls"); return; }
+    if (scanf("%d", &choice) != 1) { while (getchar() != '\n'); cls(); return; }
     while (getchar() != '\n');
-    if (choice <= 0 || choice > count) { system("cls"); return; }
+    if (choice <= 0 || choice > count) { cls(); return; }
 
     choice--;
     echof("\n%s を使用した！ (HP:%d / MP:%d 回復)\n", items[choice].name, items[choice].hp_heal, items[choice].mp_heal);
     can_item[items[choice].id]--;
-    system("cls");
+    cls();
 }
 
 void display_map(const Map* map) {
