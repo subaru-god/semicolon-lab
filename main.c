@@ -2,10 +2,10 @@
 char user_select;
 char name[10000];
 char call_name[10000];
-int level_of_story;
+gcc -finput-charset=CP932 -fexec-charset=CP932 main.c -o main && ./maingcc -finput-charset=CP932 -fexec-charset=CP932 main.c -o main && ./mainint level_of_story;
 int money;
-int random;
-int random2;
+int random_number;
+int random_number2;
 int cache;
 int cache2;
 int cache3[10000];

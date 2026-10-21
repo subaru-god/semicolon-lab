@@ -1,6 +1,7 @@
 
 // 合成音声を流す関数 (getchar()がある)
 void echof(const char* format, ...) {
+#ifdef _WIN32
     char text_buffer[1024];
     char clean_buffer[1024];
     char command_buffer[2048];
@@ -45,11 +46,19 @@ void echof(const char* format, ...) {
 
     // エンターキー待機
     getchar();
+#else
+    va_list args;
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
+    getchar();
+#endif
 }
 
 
 /* BGM再生開始 (ファイル名指定) */
 void play_bgm(const char* filename) {
+#ifdef _WIN32
     char cmd[512];
 
     /* 既に鳴っているBGMがあれば停止して閉じる */
@@ -62,12 +71,17 @@ void play_bgm(const char* filename) {
 
     /* ループ再生を開始 */
     mciSendString("play my_bgm repeat", NULL, 0, NULL);
+#else
+    (void)filename;
+#endif
 }
 
 /* BGM停止 */
 void stop_bgm(void) {
+#ifdef _WIN32
     mciSendString("stop my_bgm", NULL, 0, NULL);
     mciSendString("close my_bgm", NULL, 0, NULL);
+#endif
 }
 
 void cls(void) {

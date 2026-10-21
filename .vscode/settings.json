@@ -1,0 +1,5 @@
+{
+    "code-runner.executorMap": {
+        "c": "cd \"$dir\" && gcc -finput-charset=CP932 -fexec-charset=CP932 \"$fileName\" -o \"$fileNameWithoutExt\" && script -qefc \"./$fileNameWithoutExt\" /dev/null | iconv -f CP932 -t UTF-8"
+    }
+}
