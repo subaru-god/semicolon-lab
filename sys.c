@@ -69,3 +69,7 @@ void stop_bgm(void) {
     mciSendString("stop my_bgm", NULL, 0, NULL);
     mciSendString("close my_bgm", NULL, 0, NULL);
 }
+
+void cls(void) {
+    printf("\033[2J\033[H");
+}

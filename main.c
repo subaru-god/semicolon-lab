@@ -1,6 +1,3 @@
-#ifndef _BORLANDC_
-#pragma comment(lib, "winmm.lib")
-#endif
 
 char user_select;
 char name[10000];

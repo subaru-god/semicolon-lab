@@ -4,9 +4,21 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+
+#ifdef _WIN32
 #include <windows.h>
 #include <mmsystem.h>
 #include <conio.h>
+#elif  defined(__unix__) || defined(__APPLE__)
+#include <unistd.h>
+#include <termios.h>
+#else
+#error "Unsupported platform"
+#endif
+
+#if defined(_WIN32) && defined(_MSC_VER)
+#pragma comment(lib, "winmm.lib")
+#endif
 
 #include "change.c"
 #include "sys.c"
@@ -44,6 +56,8 @@ void echof(const char* format, ...);
 void play_bgm(const char* filename);
 //BGMを停止する関数
 void stop_bgm(void);
+//画面をクリアする関数
+void cls(void);
 //敵IDを指定して戦闘を開始する関数
 int battle(int e_id);
 //アイテムショップを開く関数(カンマ区切りで品物を指定(-1で終了))

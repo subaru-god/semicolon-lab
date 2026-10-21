@@ -434,11 +434,11 @@ int battle(int e_id) {
     e_hp = enemy.hp;
     e_rest_hp = e_hp;
 
-    system("cls");
+    cls();
     echof("==================== \n %s が現れた!\n==================== \n\n", enemy.name);
 
     while (e_rest_hp > 0 && player_rest_hp > 0) {
-        system("cls");
+        cls();
         printf("\n----------------------------------------\n");
         printf("%s HP %d/%d  VS  %s HP %d/%d (MP:%d/%d)\n", enemy.name, e_rest_hp, e_hp, name, player_rest_hp, player_hp, player_mp, max_mp);
 
@@ -509,7 +509,7 @@ int battle(int e_id) {
 
         case '5':
             echof("\n%sは逃げ出した！\n", name);
-            system("cls");
+            cls();
             return 0;
         }
 
@@ -522,12 +522,12 @@ int battle(int e_id) {
 
     if (e_rest_hp <= 0) {
         echof("\n%sを倒した！勝利！\n", enemy.name);
-        system("cls");
+        cls();
         return 1;
     }
     else {
         echof("\n%sは倒れてしまった...\n", name);
-        system("cls");
+        cls();
         return 0;
     }
 }

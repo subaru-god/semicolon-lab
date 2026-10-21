@@ -57,10 +57,10 @@ void change(void) {
             if (++count >= 100) break;
         }
     }
-    system("cls");
+    cls();
     if (count == 0) {
         echof("\n変更できる装備を持っていません！\n");
-        system("cls");
+        cls();
         return;
     }
 
@@ -76,13 +76,13 @@ void change(void) {
 
     if (scanf("%d", &choice) != 1) {
         while (getchar() != '\n');
-        system("cls");
+        cls();
         return;
     }
     while (getchar() != '\n');
 
     if (choice <= 0 || choice > count) {
-        system("cls");
+        cls();
         return;
     }
 
@@ -96,5 +96,5 @@ void change(void) {
 
     sum_ap = selected_power + ap;
     echof("\n%s を装備しました！（攻撃力: %d）\n", available_weapons[choice].name, sum_ap);
-    system("cls");
+    cls();
 }
