@@ -4,21 +4,116 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <errno.h>
+#if defined(__unix__) || defined(__APPLE__)
+    #include <iconv.h>
+#endif
 
 #ifdef _WIN32
-#include <windows.h>
-#include <mmsystem.h>
-#include <conio.h>
+    #include <windows.h>
+    #include <mmsystem.h>
+    #include <conio.h>
 #elif  defined(__unix__) || defined(__APPLE__)
-#include <unistd.h>
-#include <termios.h>
+    // Linux terminal support
+    #include <unistd.h>
+    #include <termios.h>
+    #include <unistd.h>
+    // Linux Sleep compatibility
+    #define Sleep(ms) usleep((ms) * 1000)
 #else
-#error "Unsupported platform"
+    // legacy comment removed during CP932 normalization
+    #error "Unsupported platform"
 #endif
 
 #if defined(_WIN32) && defined(_MSC_VER)
-#pragma comment(lib, "winmm.lib")
+    // legacy comment removed during CP932 normalization
+    #pragma comment(lib, "winmm.lib")
 #endif
+
+
+
+static FILE* project_fopen(const char* path, const char* mode) {
+#if defined(__unix__) || defined(__APPLE__)
+    iconv_t converter = iconv_open("UTF-8", "CP932");
+    char utf8_path[4096];
+    char* input = (char*)path;
+    char* output = utf8_path;
+    size_t input_left = strlen(path);
+    size_t output_left = sizeof(utf8_path) - 1;
+
+    if (converter == (iconv_t)-1) {
+        perror("iconv_open");
+        return NULL;
+    }
+    if (iconv(converter, &input, &input_left, &output, &output_left) == (size_t)-1) {
+        int saved_errno = errno;
+        iconv_close(converter);
+        errno = saved_errno;
+        perror("CP932 path conversion");
+        return NULL;
+    }
+    *output = '\0';
+    iconv_close(converter);
+    return fopen(utf8_path, mode);
+#else
+    return fopen(path, mode);
+#endif
+}
+
+#define fopen project_fopen
+
+extern char user_select;     // legacy comment removed during CP932 normalization
+extern char name[];          // legacy comment removed during CP932 normalization
+extern char call_name[];     // legacy comment removed during CP932 normalization
+extern int level_of_story;   // legacy comment removed during CP932 normalization
+extern int money;            // legacy comment removed during CP932 normalization
+extern int random_number;           // legacy comment removed during CP932 normalization
+extern int random_number2;          // legacy comment removed during CP932 normalization
+extern int cache;            // legacy comment removed during CP932 normalization
+extern int cache2;           // legacy comment removed during CP932 normalization
+extern int cache3[]; 	  	 // legacy comment removed during CP932 normalization
+extern char cache_str[];     // legacy comment removed during CP932 normalization
+extern int result;           // legacy comment removed during CP932 normalization
+extern int ap;               // legacy comment removed during CP932 normalization
+extern int sum_ap;           // legacy comment removed during CP932 normalization
+extern int m_ap;             // legacy comment removed during CP932 normalization
+extern int m_sum_ap;         // legacy comment removed during CP932 normalization
+extern int current_weapon_id;// legacy comment removed during CP932 normalization
+extern int can_magics[];     // legacy comment removed during CP932 normalization
+extern int can_weapon[];     // legacy comment removed during CP932 normalization
+extern int can_item[];       // legacy comment removed during CP932 normalization
+extern int player_hp;        // legacy comment removed during CP932 normalization
+extern int player_rest_hp;   // legacy comment removed during CP932 normalization
+
+// legacy comment removed during CP932 normalization
+void echof(const char* format, ...);
+// legacy comment removed during CP932 normalization
+void play_bgm(const char* filename);
+// legacy comment removed during CP932 normalization
+void stop_bgm(void);
+// legacy comment removed during CP932 normalization
+void cls(void);
+// legacy comment removed during CP932 normalization
+int battle(int e_id);
+// legacy comment removed during CP932 normalization
+int item_shop(int first_id, ...);
+// legacy comment removed during CP932 normalization
+int weapon_shop(int first_id, ...);
+// legacy comment removed during CP932 normalization
+int all_shop(int first_id, ...);
+// legacy comment removed during CP932 normalization
+void start_map_mode(const char* filename, int spawn_id, int has_enemy, ...);
+// legacy comment removed during CP932 normalization
+void change(void);
+
+// legacy comment removed during CP932 normalization
+void set_up(void);
+// legacy comment removed during CP932 normalization
+void prologue(void);
+// legacy comment removed during CP932 normalization
+int story_1(void);
+// legacy comment removed during CP932 normalization
+int debug(void);
 
 #include "change.c"
 #include "sys.c"
@@ -26,56 +121,3 @@
 #include "battle.c"
 #include "shop.c"
 #include "map.c"
-
-extern char user_select;     //ユーザーの選択を格納する変数
-extern char name[];          //プレイヤーの名前を格納する変数
-extern char call_name[];     //プレイヤーの呼ばれ方を格納する変数
-extern int level_of_story;   //プレイヤーが選択した難易度を格納する変数
-extern int money;            //プレイヤーの所持金を格納する変数
-extern int random;           //乱数を格納する変数
-extern int random2;          //乱数を格納する変数
-extern int cache;            //一時的な値を格納する変数
-extern int cache2;           //一時的な値を格納する変数
-extern int cache3[]; 	  	 //一時的な値を格納する配列
-extern char cache_str[];     //一時的な文字列を格納する配列
-extern int result;           //戦闘の結果を格納する変数
-extern int ap;               //プレイヤーの攻撃力を格納する変数
-extern int sum_ap;           //プレイヤーの合計攻撃力を格納する変数
-extern int m_ap;             //プレイヤーの魔法攻撃力を格納する変数
-extern int m_sum_ap;         //プレイヤーの合計魔法攻撃力を格納する変数
-extern int current_weapon_id;//プレイヤーが装備している武器のIDを格納する変数
-extern int can_magics[];     //プレイヤーが使用可能な魔法のIDを格納する配列
-extern int can_weapon[];     //プレイヤーが所持している武器のIDを格納する配列
-extern int can_item[];       //プレイヤーが所持しているアイテムのIDを格納する配列
-extern int player_hp;        //プレイヤーの現在のHPを格納する変数
-extern int player_rest_hp;   //プレイヤーの残りHPを格納する変数
-
-//printfのように文字列を出力し、同時に音声で読み上げる関数(getchar()あり)
-void echof(const char* format, ...);
-//BGMを再生する関数
-void play_bgm(const char* filename);
-//BGMを停止する関数
-void stop_bgm(void);
-//画面をクリアする関数
-void cls(void);
-//敵IDを指定して戦闘を開始する関数
-int battle(int e_id);
-//アイテムショップを開く関数(カンマ区切りで品物を指定(-1で終了))
-int item_shop(int first_id, ...);
-//武器ショップを開く関数(カンマ区切りで品物を指定(-1で終了))
-int weapon_shop(int first_id, ...);
-//よろず屋を開く関数(カンマ区切りで品物を指定(-1でアイテムを区切る))
-int all_shop(int first_id, ...);
-//マップモードを開始する関数(カンマ区切りで敵IDを指定(-1で終了))
-void start_map_mode(const char* filename, int spawn_id, int has_enemy, ...);
-//装備変更を行う関数
-void change(void);
-
-//ゲーム開始時の初期設定を行う関数
-void set_up(void);
-//ゲームのプロローグを表示する関数
-void prologue(void);
-//ゲームのエピローグを表示する関数
-int story_1(void);
-//ゲームのデバッグ情報を表示する関数
-int debug(void);

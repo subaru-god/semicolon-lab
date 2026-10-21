@@ -34,10 +34,40 @@ extern int all_shop(int first_id, ...);
 extern int can_item[];
 
 static void set_cursor_pos(int x, int y) {
+#ifdef _WIN32
     COORD coord;
     coord.X = (SHORT)x;
     coord.Y = (SHORT)y;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+#else
+    printf("\033[%d;%dH", y + 1, x + 1);
+#endif
+}
+
+static int read_map_key(void) {
+#ifdef _WIN32
+    return _getch();
+#else
+    struct termios original, raw;
+    int key;
+
+    if (tcgetattr(STDIN_FILENO, &original) == -1) {
+        perror("tcgetattr");
+        return getchar();
+    }
+    raw = original;
+    raw.c_lflag &= (tcflag_t)~(ICANON | ECHO);
+    if (tcsetattr(STDIN_FILENO, TCSANOW, &raw) == -1) {
+        perror("tcsetattr");
+        return getchar();
+    }
+    key = getchar();
+    if (tcsetattr(STDIN_FILENO, TCSANOW, &original) == -1) {
+        perror("tcsetattr");
+        return EOF;
+    }
+    return key;
+#endif
 }
 
 static int is_event_symbol(char ch) {
@@ -270,7 +300,7 @@ int load_map_from_file(Map* map, const char* filename, int spawn_id) {
 
 static int handle_event_point(Map* map, char symbol, const char* map_name) {
     char user_select;
-    system("cls");
+    cls();
     switch (symbol) {
     case 'B':
         echof("お母さんと出会った！\n");
@@ -303,7 +333,7 @@ static int handle_event_point(Map* map, char symbol, const char* map_name) {
         echof("【%c】何も起こらなかった...\n", symbol);
         break;
     }
-    system("cls");
+    cls();
     return 1;
 }
 
@@ -330,10 +360,10 @@ int move_player(Map* map, char key, int has_enemy, const int enemy_ids[], int en
     }
 
     if (has_enemy && enemy_count > 0 && rand() % 100 < 5) {
-        system("cls");
+        cls();
         echof("モンスターが現れた！\n");
         battle(enemy_ids[rand() % enemy_count]);
-        system("cls");
+        cls();
     }
     return 1;
 }
@@ -353,7 +383,7 @@ void start_map_mode(const char* filename, int spawn_id, int has_enemy, ...) {
         }
     }
 
-    system("cls");
+    cls();
     if (strcmp(filename, "random") == 0) {
         while (event_count < 32) {
             int sym = va_arg(args, int);
@@ -371,10 +401,10 @@ void start_map_mode(const char* filename, int spawn_id, int has_enemy, ...) {
 
     while (1) {
         display_map(&map);
-        key = (char)_getch();
+        key = (char)read_map_key();
         if (!move_player(&map, key, has_enemy, enemy_ids, enemy_count)) break;
     }
 
     free_map(&map);
-    system("cls");
+    cls();
 }

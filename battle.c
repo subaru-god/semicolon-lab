@@ -281,7 +281,7 @@ static void apply_buff(BuffStatus* buff, int parent_id, float rate, int turns, c
 static int select_magic_phase(int* e_rest_hp, const char* e_name, int* player_mp, int enemy_element_id, BuffStatus* p_buff, BuffStatus* e_buff) {
     SkillData learned_skills[100];
     WeaponEffectData wep;
-    int count = 0, i, choice, damage, random;
+    int count = 0, i, choice, damage, random_number;
     float mult = 1.0f;
 
     for (i = 1; i < 1000; i++) {
@@ -317,8 +317,8 @@ static int select_magic_phase(int* e_rest_hp, const char* e_name, int* player_mp
         return 1;
     }
 
-    random = rand() % 30 + 70;
-    damage = (int)(learned_skills[choice].power_rate * random / 100.0f * p_buff->mag_rate);
+    random_number = rand() % 30 + 70;
+    damage = (int)(learned_skills[choice].power_rate * random_number / 100.0f * p_buff->mag_rate);
     mult *= get_element_multiplier(learned_skills[choice].parent_id, enemy_element_id);
 
     if (load_weapon_effect(current_weapon_id, &wep)) {
@@ -399,7 +399,8 @@ static void enemy_turn_action(const EnemyData* enemy, BuffStatus* e_buff, BuffSt
             apply_buff(e_buff, e_skill.parent_id, e_skill.power_rate, e_skill.buff_turns, enemy->name);
         }
         else {
-            damage = (int)(e_skill.power_rate * (rand() % 30 + 70) / 100.0f * e_buff->mag_rate);
+            random_number = rand() % 30 + 70;
+            damage = (int)(e_skill.power_rate * random_number / 100.0f * e_buff->mag_rate);
             damage = (int)(damage * get_element_multiplier(e_skill.parent_id, 8));
             if (p_buff->def_rate > 1.0f) damage = (int)(damage / p_buff->def_rate);
 
@@ -408,7 +409,8 @@ static void enemy_turn_action(const EnemyData* enemy, BuffStatus* e_buff, BuffSt
         }
     }
     else {
-        damage = (int)((rand() % 10 + 5) * e_buff->atk_rate);
+        random_number2 = rand() % 10 + 5;
+        damage = (int)(random_number2 * e_buff->atk_rate);
         if (p_buff->def_rate > 1.0f) damage = (int)(damage / p_buff->def_rate);
         echof("%sの攻撃！ %sは %d のダメージを受けた！\n", enemy->name, name, damage);
         player_rest_hp -= damage;
