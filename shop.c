@@ -14,6 +14,7 @@ extern int can_weapon[];
 extern int level_of_story;
 extern void echof(const char* format, ...);
 
+/* 引数: item_id = CSVのアイテムID、out_item = 読み込み先 */
 static int load_shop_item_info(int item_id, ShopItemData* out_item) {
     FILE* fp = fopen("アイテム.csv", "r");
     char line[256], * token;
@@ -39,6 +40,7 @@ static int load_shop_item_info(int item_id, ShopItemData* out_item) {
     return 0;
 }
 
+/* 引数: weapon_id = CSVの武器ID、out_weapon = 読み込み先 */
 static int load_shop_weapon_info(int weapon_id, ShopWeaponData* out_weapon) {
     FILE* fp = fopen("武器.csv", "r");
     char line[512], * token;
@@ -67,6 +69,7 @@ static int load_shop_weapon_info(int weapon_id, ShopWeaponData* out_weapon) {
     return 0;
 }
 
+/* 引数: items = 店で扱うアイテム配列、count = 有効な個数 */
 static void print_item_table(const ShopItemData items[], int count) {
     int i;
     char heal_buf[64];
@@ -89,6 +92,7 @@ static void print_item_table(const ShopItemData items[], int count) {
     printf("======================================================================\n");
 }
 
+/* 引数: weapons = 店で扱う武器配列、count = 有効な個数 */
 static void print_weapon_table(const ShopWeaponData weapons[], int count) {
     int i;
     int pwr;
@@ -109,6 +113,7 @@ static void print_weapon_table(const ShopWeaponData weapons[], int count) {
     printf("======================================================================\n");
 }
 
+/* 引数: first_id以降にアイテムIDを指定し、最後は-1で終了 */
 int item_shop(int first_id, ...) {
     ShopItemData items[100];
     int count = 0, id, choice;
@@ -150,6 +155,7 @@ int item_shop(int first_id, ...) {
     return 1;
 }
 
+/* 引数: first_id以降に武器IDを指定し、最後は-1で終了 */
 int weapon_shop(int first_id, ...) {
     ShopWeaponData weapons[100];
     int count = 0, id, choice;
@@ -192,6 +198,7 @@ int weapon_shop(int first_id, ...) {
     return 1;
 }
 
+/* 引数: 先にアイテムID、次に武器IDを指定し、それぞれ-1で終了 */
 int all_shop(int first_item_id, ...) {
     ShopItemData items[100];
     ShopWeaponData weapons[100];

@@ -69,6 +69,7 @@ extern int player_rest_hp;
 extern void echof(const char* format, ...);
 extern void change(void);
 
+/* 引数: elem_id = 属性ID、out_elem = 属性関係データの格納先 */
 static int load_element_relation(int elem_id, ElementRelation* out_elem) {
     FILE* fp = fopen("属性対応.csv", "r");
     char line[256];
@@ -93,6 +94,7 @@ static int load_element_relation(int elem_id, ElementRelation* out_elem) {
     return 0;
 }
 
+/* 引数: atk_elem_id = 攻撃側属性ID、def_elem_id = 防御側属性ID */
 static float get_element_multiplier(int atk_elem_id, int def_elem_id) {
     ElementRelation atk_rel;
     if (atk_elem_id <= 0 || def_elem_id <= 0) return 1.0f;
@@ -109,6 +111,7 @@ static float get_element_multiplier(int atk_elem_id, int def_elem_id) {
     return 1.0f;
 }
 
+/* 引数: item_id = CSVのアイテムID、out_item = 読み込み先 */
 static int load_item_info(int item_id, ItemData* out_item) {
     FILE* fp = fopen("アイテム.csv", "r");
     char line[256], * token;
@@ -130,6 +133,7 @@ static int load_item_info(int item_id, ItemData* out_item) {
     fclose(fp); return 0;
 }
 
+/* 引数: weapon_id = 武器ID、out_wep = 武器効果データの格納先 */
 static int load_weapon_effect(int weapon_id, WeaponEffectData* out_wep) {
     FILE* fp = fopen("武器.csv", "r");
     char line[512], * token;
@@ -160,6 +164,7 @@ static int load_weapon_effect(int weapon_id, WeaponEffectData* out_wep) {
     fclose(fp); return 0;
 }
 
+/* 引数: target_id = 敵ID、out_enemy = 敵データの格納先 */
 static int load_enemy_info(int target_id, EnemyData* out_enemy) {
     FILE* fp = fopen("敵.csv", "r");
     char line[512], * token;
@@ -185,6 +190,7 @@ static int load_enemy_info(int target_id, EnemyData* out_enemy) {
     fclose(fp); return 0;
 }
 
+/* 引数: str = 元の文字列、out_power/out_turns = 解析結果、parent_id = スキル分類 */
 static void parse_power_and_turns(const char* str, float* out_power, int* out_turns, int parent_id) {
     char buf[64];
     char* comma;
@@ -215,6 +221,7 @@ static void parse_power_and_turns(const char* str, float* out_power, int* out_tu
     }
 }
 
+/* 引数: skill_id = スキルID、out_skill = スキルデータの格納先 */
 static int load_skill_info(int skill_id, SkillData* out_skill) {
     FILE* fp = fopen("技一覧.csv", "r");
     char line[512], * token;
@@ -241,6 +248,7 @@ static int load_skill_info(int skill_id, SkillData* out_skill) {
     fclose(fp); return 0;
 }
 
+/* 引数: buff = 更新する状態、entity_name = メッセージに表示する名前 */
 static void update_buff_status(BuffStatus* buff, const char* entity_name) {
     if (buff->atk_turns > 0 && --buff->atk_turns == 0) {
         buff->atk_rate = 1.0f;
@@ -256,6 +264,7 @@ static void update_buff_status(BuffStatus* buff, const char* entity_name) {
     }
 }
 
+/* 引数: buff = 変更する状態、parent_id = 強化種類、rate/turns = 効果、entity_name = 表示名 */
 static void apply_buff(BuffStatus* buff, int parent_id, float rate, int turns, const char* entity_name) {
     switch (parent_id) {
     case 9:
@@ -278,6 +287,7 @@ static void apply_buff(BuffStatus* buff, int parent_id, float rate, int turns, c
     }
 }
 
+/* 引数: HP/MPのポインタ、敵の名前と属性、プレイヤーと敵の強化状態 */
 static int select_magic_phase(int* e_rest_hp, const char* e_name, int* player_mp, int enemy_element_id, BuffStatus* p_buff, BuffStatus* e_buff) {
     SkillData learned_skills[100];
     WeaponEffectData wep;
@@ -338,6 +348,7 @@ static int select_magic_phase(int* e_rest_hp, const char* e_name, int* player_mp
     return 1;
 }
 
+/* 引数: player_mp = 現在MP、max_mp = 最大MP */
 static int select_item_phase_battle(int* player_mp, int max_mp) {
     ItemData items[100];
     int count = 0, i, choice;
@@ -377,6 +388,7 @@ static int select_item_phase_battle(int* player_mp, int max_mp) {
     return 1;
 }
 
+/* 引数: enemy = 行動する敵、e_buff/p_buff = 敵とプレイヤーの強化状態 */
 static void enemy_turn_action(const EnemyData* enemy, BuffStatus* e_buff, BuffStatus* p_buff) {
     float r = (float)rand() / RAND_MAX;
     float cumulative = 0.0f;

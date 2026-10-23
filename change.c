@@ -16,6 +16,7 @@ typedef struct {
     char remark[128];
 } WeaponData;
 
+/* ˆø”: weapon_id = CSV‚Ì•ŠíIDAout_weapon = “Ç‚İ‚İæ */
 static int load_weapon_info(int weapon_id, WeaponData* out_weapon) {
     FILE* fp = fopen("•Ší.csv", "r");
     char line[256];
