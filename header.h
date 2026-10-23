@@ -14,19 +14,18 @@
     #include <mmsystem.h>
     #include <conio.h>
 #elif  defined(__unix__) || defined(__APPLE__)
-    // Linux terminal support
+    // Unix系ではtermios.hで端末を操作し、usleepで待機する。
     #include <unistd.h>
     #include <termios.h>
     #include <unistd.h>
-    // Linux Sleep compatibility
     #define Sleep(ms) usleep((ms) * 1000)
 #else
-    // legacy comment removed during CP932 normalization
+    // 対応していないプラットフォーム。
     #error "Unsupported platform"
 #endif
 
 #if defined(_WIN32) && defined(_MSC_VER)
-    // legacy comment removed during CP932 normalization
+    // MSVCでビルドする場合はWindowsのマルチメディアライブラリをリンクする。
     #pragma comment(lib, "winmm.lib")
 #endif
 
@@ -62,57 +61,56 @@ static FILE* project_fopen(const char* path, const char* mode) {
 
 #define fopen project_fopen
 
-extern char user_select;     // legacy comment removed during CP932 normalization
-extern char name[];          // legacy comment removed during CP932 normalization
-extern char call_name[];     // legacy comment removed during CP932 normalization
-extern int level_of_story;   // legacy comment removed during CP932 normalization
-extern int money;            // legacy comment removed during CP932 normalization
-extern int random_number;           // legacy comment removed during CP932 normalization
-extern int random_number2;          // legacy comment removed during CP932 normalization
-extern int cache;            // legacy comment removed during CP932 normalization
-extern int cache2;           // legacy comment removed during CP932 normalization
-extern int cache3[]; 	  	 // legacy comment removed during CP932 normalization
-extern char cache_str[];     // legacy comment removed during CP932 normalization
-extern int result;           // legacy comment removed during CP932 normalization
-extern int ap;               // legacy comment removed during CP932 normalization
-extern int sum_ap;           // legacy comment removed during CP932 normalization
-extern int m_ap;             // legacy comment removed during CP932 normalization
-extern int m_sum_ap;         // legacy comment removed during CP932 normalization
-extern int current_weapon_id;// legacy comment removed during CP932 normalization
-extern int can_magics[];     // legacy comment removed during CP932 normalization
-extern int can_weapon[];     // legacy comment removed during CP932 normalization
-extern int can_item[];       // legacy comment removed during CP932 normalization
-extern int player_hp;        // legacy comment removed during CP932 normalization
-extern int player_rest_hp;   // legacy comment removed during CP932 normalization
+extern char user_select;     // ユーザーの選択。
+extern char name[];          // プレイヤーの名前。
+extern char call_name[];     // プレイヤーの呼び名。
+extern int level_of_story;   // 選択したストーリーの難易度。
+extern int money;            // プレイヤーの所持金。
+extern int random_number;    // 汎用乱数。
+extern int random_number2;   // 予備の乱数。
+extern int cache;            // 汎用整数キャッシュ。
+extern int cache2;           // 予備の整数キャッシュ。
+extern int cache3[];         // 整数キャッシュ配列。
+extern char cache_str[];     // 汎用文字列キャッシュ。
+extern int result;           // 汎用の結果格納用変数。
+extern int ap;               // アクションポイント。
+extern int sum_ap;           // アクションポイントの合計。
+extern int m_ap;             // 現在の最大アクションポイント。
+extern int m_sum_ap;         // 最大アクションポイントの合計。
+extern int current_weapon_id;// 現在装備している武器のID。
+extern int can_magics[];     // 習得済み魔法のフラグ。
+extern int can_weapon[];     // 使用可能な武器のフラグ。
+extern int can_item[];       // 使用可能なアイテムのフラグ。
+extern int player_hp;        // プレイヤーの最大HP。
+extern int player_rest_hp;   // プレイヤーの残りHP。
 
-// legacy comment removed during CP932 normalization
+// 書式付きの文字列を表示する。
 void echof(const char* format, ...);
-// legacy comment removed during CP932 normalization
+// BGMを再生する。
 void play_bgm(const char* filename);
-// legacy comment removed during CP932 normalization
+// BGMを停止する。
 void stop_bgm(void);
-// legacy comment removed during CP932 normalization
+// 端末の表示を消去する。
 void cls(void);
-// legacy comment removed during CP932 normalization
+// 指定した敵との戦闘を実行する。
 int battle(int e_id);
-// legacy comment removed during CP932 normalization
+// アイテムショップを開く。
 int item_shop(int first_id, ...);
-// legacy comment removed during CP932 normalization
+// 武器ショップを開く。
 int weapon_shop(int first_id, ...);
-// legacy comment removed during CP932 normalization
+// 総合ショップを開く。
 int all_shop(int first_id, ...);
-// legacy comment removed during CP932 normalization
+// マップモードを開始する。
 void start_map_mode(const char* filename, int spawn_id, int has_enemy, ...);
-// legacy comment removed during CP932 normalization
+// プレイヤーの装備を変更する。
 void change(void);
-
-// legacy comment removed during CP932 normalization
+// ゲームデータを初期化する。
 void set_up(void);
-// legacy comment removed during CP932 normalization
+// プロローグを実行する。
 void prologue(void);
-// legacy comment removed during CP932 normalization
+// メインストーリーを実行する。
 int story_1(void);
-// legacy comment removed during CP932 normalization
+// デバッグメニューを実行する。
 int debug(void);
 
 #include "change.c"
