@@ -31,6 +31,7 @@
 
 
 
+/* 引数: path = ファイルパス、mode = fopenのモード */
 static FILE* project_fopen(const char* path, const char* mode) {
 #if defined(__unix__) || defined(__APPLE__)
     iconv_t converter = iconv_open("UTF-8", "CP932");
@@ -84,23 +85,54 @@ extern int can_item[];       // 使用可能なアイテムのフラグ。
 extern int player_hp;        // プレイヤーの最大HP。
 extern int player_rest_hp;   // プレイヤーの残りHP。
 
-// 書式付きの文字列を表示する。
+/* 書式付きの文字列を表示する。
+ 引数: format = printf形式の書式文字列、後続の引数 = 書式指定に入れる値 */
 void echof(const char* format, ...);
-// BGMを再生する。
+/* BGMを再生する。
+ 引数: ファイル名 */
 void play_bgm(const char* filename);
-// BGMを停止する。
+/* BGMを停止する。
+ 引数: なし */
 void stop_bgm(void);
 // 端末の表示を消去する。
 void cls(void);
 // 指定した敵との戦闘を実行する。
 int battle(int e_id);
-// アイテムショップを開く。
+/* アイテムショップを開く。
+ 引数: first_id以降にアイテムIDを指定し、最後は-1で終了 */
 int item_shop(int first_id, ...);
-// 武器ショップを開く。
+/* 武器ショップを開く。
+ 引数: first_id以降に武器IDを指定し、最後は-1で終了 */
 int weapon_shop(int first_id, ...);
-// 総合ショップを開く。
+/* 総合ショップを開く。
+ 引数: 先にアイテムID、次に武器IDを指定し、それぞれ-1で終了 */
 int all_shop(int first_id, ...);
-// マップモードを開始する。
+/*
+ * start_map_mode() の引数:
+ *   filename  = マップファイル名。"random" の場合はランダムマップを生成する。
+ *   spawn_id  = 通常マップで使用するプレイヤーの開始位置ID。
+ *   has_enemy = 敵の有無。0 は敵なし、1 は敵あり。
+ *
+ * 通常マップの場合:
+ *   start_map_mode("マップファイル名", spawn_id, 0);
+ *   start_map_mode("マップファイル名", spawn_id, 1, 敵ID, 敵ID, ..., -1);
+ *
+ * "random" の場合:
+ *   敵あり:
+ *     start_map_mode("random", 0, 1,
+ *                    敵ID, 敵ID, ..., -1,
+ *                    イベント記号, イベント説明文,
+ *                    イベント記号, イベント説明文, ..., -1);
+ *   敵なし:
+ *     start_map_mode("random", 0, 0,
+ *                    イベント記号, イベント説明文,
+ *                    イベント記号, イベント説明文, ..., -1);
+ *
+ * 敵IDの一覧は -1 で終了する。イベントは「記号」と「説明文」を
+ * 必ずペアで指定し、最後に -1 を指定して終了する。
+ * 例: start_map_mode("random", 0, 1, 20, 21, 22, -1,
+ *                    'I', "アイテムショップ", 'B', "バトル", -1);
+ */
 void start_map_mode(const char* filename, int spawn_id, int has_enemy, ...);
 // プレイヤーの装備を変更する。
 void change(void);

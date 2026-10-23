@@ -122,6 +122,7 @@ int story_1(void) {
     battle(20);
     echof("使い方がわかったので町へ出てみてみましょう");
     can_item[1] = 1;
+    start_map_mode("サイショームラ.txt", 0, -1);
     return 0;
 }
 

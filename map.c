@@ -33,6 +33,7 @@ extern int weapon_shop(int first_id, ...);
 extern int all_shop(int first_id, ...);
 extern int can_item[];
 
+/* 引数: x = コンソールの横位置、y = コンソールの縦位置 */
 static void set_cursor_pos(int x, int y) {
 #ifdef _WIN32
     COORD coord;
@@ -74,6 +75,7 @@ static int is_event_symbol(char ch) {
     return ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'));
 }
 
+/* 引数: map = 確保対象のマップ、width/height = マップの幅と高さ */
 static int allocate_map(Map* map, int width, int height) {
     int y, i;
     map->width = width;
@@ -111,6 +113,7 @@ static void free_map(Map* map) {
     }
 }
 
+/* 引数: item_id = CSVのアイテムID、out_item = 読み込み先 */
 static int load_map_item_info(int item_id, MapItemData* out_item) {
     FILE* fp = fopen("アイテム.csv", "r");
     char line[256], * token;
@@ -200,6 +203,7 @@ void display_map(const Map* map) {
     printf("[W]:上  [S]:下  [A]:左  [D]:右  [Q]:アイテムを使う\n");
 }
 
+/* 引数: map = 出力先マップ、event_symbols/event_count = イベント定義、event_descs = 説明文 */
 static void generate_random_map(Map* map, const char event_symbols[], int event_count, const char* event_descs[]) {
     int x, y, i, width = 20, height = 10, rx, ry;
     allocate_map(map, width, height);
@@ -238,6 +242,7 @@ static void generate_random_map(Map* map, const char event_symbols[], int event_
     }
 }
 
+/* 引数: map = 出力先マップ、filename = マップファイル、spawn_id = 開始位置 */
 int load_map_from_file(Map* map, const char* filename, int spawn_id) {
     FILE* fp = fopen(filename, "r");
     char line[512], spawn_char = (char)('0' + spawn_id);
@@ -298,45 +303,59 @@ int load_map_from_file(Map* map, const char* filename, int spawn_id) {
     return 1;
 }
 
+/* 引数: symbol = イベント記号、map_name = 現在のマップファイル名 */
 static int handle_event_point(char symbol, const char* map_name) {
     char user_select;
     cls();
     switch (symbol) {
-    case 'B':
-        echof("お母さんと出会った！\n");
-        do {
-            printf("バトルの練習をしておく？ y/n：");
-            user_select = (char)getchar();
-            while (getchar() != '\n');
-        } while (user_select != 'y' && user_select != 'n');
+        case 'B':
+            echof("お母さんと出会った！\n");
+                do {
+                    printf("バトルの練習をしておく？ y/n：");
+                   user_select = (char)getchar();
+                   while (getchar() != '\n');
+                } while (user_select != 'y' && user_select != 'n');
 
-        if (user_select == 'y') battle(20);
-        else echof("そう…");
-        echof("頑張ってらっしゃい");
-        break;
-    case 'I':
-        echof("アイテムショップへ入った！\n");
-        if (strcmp(map_name, "サイショームラ_1.txt") == 0) item_shop(1, 2, 3, -1);
-        break;
-    case 'Q':
-        echof("町を出た\n");
-        return 0;
-    case 'Y':
-        echof("よろず屋へ入った！\n");
-        if (strcmp(map_name, "サイショームラ_1.txt") == 0) all_shop(1, 2, 3, -1, 1, 2, 3, -1);
-        break;
-    case 'W':
-        echof("武器屋へ入った！\n");
-        if (strcmp(map_name, "サイショームラ_1.txt") == 0) weapon_shop(1, 2, 3, -1);
-        break;
-    default:
-        echof("【%c】何も起こらなかった...\n", symbol);
-        break;
+            if (user_select == 'y') battle(20);
+                else echof("そう…");
+            echof("頑張ってらっしゃい");
+            break;
+
+        case 'I':
+            echof("アイテムショップへ入った！\n");
+            if (strcmp(map_name, "サイショームラ_1.txt") == 0) item_shop(1, 2, 3, -1);
+            break;
+
+        case 'O':
+            if (strcmp(map_name, "サイショームラ_1.txt") == 0) {
+                echof("町の外へ出た！\n");
+                start_map_mode("random", 0, 1, 20, 21, 22, -1);
+                return 0;
+            }
+
+        case 'Q':
+            echof("町を出た\n");
+            return 0;
+
+        case 'Y':
+            echof("よろず屋へ入った！\n");
+            if (strcmp(map_name, "サイショームラ_1.txt") == 0) all_shop(1, 2, 3, -1, 1, 2, 3, -1);
+            break;
+
+        case 'W':
+            echof("武器屋へ入った！\n");
+            if (strcmp(map_name, "サイショームラ_1.txt") == 0) weapon_shop(1, 2, 3, -1);
+            break;
+
+        default:
+            echof("【%c】何も起こらなかった...\n", symbol);
+            break;
     }
     cls();
     return 1;
 }
 
+/* 引数: map = 現在のマップ、key = 入力キー、has_enemy = 敵の有無、enemy_ids/enemy_count = 敵一覧 */
 int move_player(Map* map, char key, int has_enemy, const int enemy_ids[], int enemy_count) {
     int next_x = map->player_x, next_y = map->player_y;
 
@@ -368,6 +387,7 @@ int move_player(Map* map, char key, int has_enemy, const int enemy_ids[], int en
     return 1;
 }
 
+/* 引数: ファイル名、出現位置ID、敵の有無、敵IDの順に指定し、敵IDは-1で終了 */
 void start_map_mode(const char* filename, int spawn_id, int has_enemy, ...) {
     Map map;
     char key, event_symbols[32];
