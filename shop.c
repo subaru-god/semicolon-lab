@@ -42,6 +42,7 @@ static int load_shop_item_info(int item_id, ShopItemData* out_item) {
 static int load_shop_weapon_info(int weapon_id, ShopWeaponData* out_weapon) {
     FILE* fp = fopen("•Ší.csv", "r");
     char line[512], * token;
+    int k;
     if (fp == NULL) return 0;
     if (fgets(line, sizeof(line), fp) == NULL) { fclose(fp); return 0; }
 
@@ -56,7 +57,7 @@ static int load_shop_weapon_info(int weapon_id, ShopWeaponData* out_weapon) {
             token = strtok(NULL, ","); if (token) out_weapon->power_easy = atoi(token);
             token = strtok(NULL, ","); if (token) out_weapon->power_normal = atoi(token);
             token = strtok(NULL, ","); if (token) out_weapon->power_hard = atoi(token);
-            for (int k = 0; k < 4; k++) token = strtok(NULL, ",");
+            for (k = 0; k < 4; k++) token = strtok(NULL, ",");
             out_weapon->price = (token && strlen(token) > 0) ? atoi(token) : 200;
             fclose(fp);
             return 1;
@@ -67,14 +68,16 @@ static int load_shop_weapon_info(int weapon_id, ShopWeaponData* out_weapon) {
 }
 
 static void print_item_table(const ShopItemData items[], int count) {
+    int i;
+    char heal_buf[64];
     printf("======================================================================\n");
     printf("                         “¹‹ï‰® (Š‹à: %d G)\n", money);
     printf("======================================================================\n");
     printf("  No. | %-20s | %-8s | %-6s | %-18s\n", "ƒAƒCƒeƒ€–¼", "‰¿Ši", "Š”", "‰ñ•œŒø‰Ê");
     printf("------+----------------------+----------+--------+--------------------\n");
 
-    for (int i = 0; i < count; i++) {
-        char heal_buf[64] = "";
+    for (i = 0; i < count; i++) {
+        heal_buf[0] = '\0';
         if (items[i].hp_heal > 0 && items[i].mp_heal > 0) sprintf(heal_buf, "HP:+%d MP:+%d", items[i].hp_heal, items[i].mp_heal);
         else if (items[i].hp_heal > 0) sprintf(heal_buf, "HP:+%d", items[i].hp_heal);
         else if (items[i].mp_heal > 0) sprintf(heal_buf, "MP:+%d", items[i].mp_heal);
@@ -87,14 +90,16 @@ static void print_item_table(const ShopItemData items[], int count) {
 }
 
 static void print_weapon_table(const ShopWeaponData weapons[], int count) {
+    int i;
+    int pwr;
     printf("======================================================================\n");
     printf("                         •Ší‰® (Š‹à: %d G)\n", money);
     printf("======================================================================\n");
     printf("  No. | %-20s | %-8s | %-6s | %-10s\n", "•Ší–¼", "‰¿Ši", "ˆĞ—Í", "ó‘Ô");
     printf("------+----------------------+----------+--------+--------------------\n");
 
-    for (int i = 0; i < count; i++) {
-        int pwr = weapons[i].power_normal;
+    for (i = 0; i < count; i++) {
+        pwr = weapons[i].power_normal;
         if (level_of_story == 1) pwr = weapons[i].power_easy;
         else if (level_of_story == 3) pwr = weapons[i].power_hard;
 

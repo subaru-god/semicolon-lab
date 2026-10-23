@@ -50,7 +50,7 @@ static int load_weapon_info(int weapon_id, WeaponData* out_weapon) {
 
 void change(void) {
     WeaponData available_weapons[100];
-    int count = 0, i, choice, selected_power = 0;
+    int count = 0, i, choice, selected_power;
 
     for (i = 1; i < 1000; i++) {
         if (can_weapon[i] == 1 && load_weapon_info(i, &available_weapons[count])) {

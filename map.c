@@ -298,7 +298,7 @@ int load_map_from_file(Map* map, const char* filename, int spawn_id) {
     return 1;
 }
 
-static int handle_event_point(Map* map, char symbol, const char* map_name) {
+static int handle_event_point(char symbol, const char* map_name) {
     char user_select;
     cls();
     switch (symbol) {
@@ -356,7 +356,7 @@ int move_player(Map* map, char key, int has_enemy, const int enemy_ids[], int en
     map->player_y = next_y;
 
     if (map->grid[next_y][next_x] == TILE_EVENT) {
-        if (!handle_event_point(map, map->event_id[next_y][next_x], map->current_map_name)) return 0;
+        if (!handle_event_point(map->event_id[next_y][next_x], map->current_map_name)) return 0;
     }
 
     if (has_enemy && enemy_count > 0 && rand() % 100 < 5) {
