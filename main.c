@@ -2,7 +2,7 @@
 char user_select;
 char name[10000];
 char call_name[10000];
-gcc -finput-charset=CP932 -fexec-charset=CP932 main.c -o main && ./maingcc -finput-charset=CP932 -fexec-charset=CP932 main.c -o main && ./mainint level_of_story;
+int level_of_story;
 int money;
 int random_number;
 int random_number2;
@@ -30,6 +30,5 @@ int main(void) {
     prologue();
     story_1();
     debug();
-
     return 0;
 }
