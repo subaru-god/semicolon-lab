@@ -1,4 +1,19 @@
-#pragma once
+//重複してインクルードされるのを防ぐためのヘッダガード
+#ifndef SEMICOLON_LAB_HEADER_H
+#define SEMICOLON_LAB_HEADER_H
+
+#pragma once //削除可能
+
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string.h>
+#include <errno.h>
+
+#if defined(__unix__) || defined(__APPLE__)
+    #include <iconv.h>
+#endif
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -28,7 +43,9 @@
 
 
 
-/* 引数: path = ファイルパス、mode = fopenのモード */
+/* 引数: path = ファイルパス、mode = fopenのモード
+ * WindowsではCP932、Linux/macOSではUTF-8でファイルを開く。 
+ */
 static FILE* project_fopen(const char* path, const char* mode) {
 #if defined(__unix__) || defined(__APPLE__)
     iconv_t converter = iconv_open("UTF-8", "CP932");
@@ -57,8 +74,11 @@ static FILE* project_fopen(const char* path, const char* mode) {
 #endif
 }
 
+/* Windowsではfopenをproject_fopenに置き換える */
 #define fopen project_fopen
 
+/* コンソールの文字コードを設定する。
+   WindowsではCP932、Linux/macOSではUTF-8を使用する。 */
 static void configure_console_encoding(void) {
 #ifdef _WIN32
     SetConsoleCP(932);
@@ -148,3 +168,5 @@ void prologue(void);
 int story_1(void);
 // デバッグメニューを実行する。
 int debug(void);
+
+#endif /* SEMICOLON_LAB_HEADER_H */
