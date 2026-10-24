@@ -25,6 +25,7 @@ int player_rest_hp = 100;
 #include "header.h"
 
 int main(void) {
+    configure_console_encoding();
     time(NULL);
     set_up();
     prologue();
