@@ -1,4 +1,3 @@
-
 char user_select;
 char name[10000];
 char call_name[10000];
@@ -31,7 +30,12 @@ int player_rest_hp = 100;
 #include "shop.c"
 #include "map.c"
 
-void main(int debug_mode) {
+int main(int debug_mode) {
+
+    if (debug_mode == 1) {
+        echof("デバッグモードを有効にしました。");
+        cls();
+    }
 
     configure_console_encoding();
     time(NULL);
