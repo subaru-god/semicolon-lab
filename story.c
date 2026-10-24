@@ -1,6 +1,4 @@
-#include <stdio.h>
-#include <time.h>
-#include <stdlib.h>
+#include "header.h"
 
 /* heder.h で宣言されているのでコメントアウトして動作確認
 extern char name[];

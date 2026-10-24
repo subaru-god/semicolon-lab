@@ -1,3 +1,4 @@
+#include "header.h"
 
 // ‡¬‰¹º‚ğ—¬‚·ŠÖ” (getchar()‚ª‚ ‚é)
 void echof(const char* format, ...) {

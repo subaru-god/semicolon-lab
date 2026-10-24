@@ -1,3 +1,5 @@
+#include "header.h"
+
 typedef struct {
     int id, parent_id, child_id, hp_heal, mp_heal, price;
     char name[64];
@@ -8,11 +10,13 @@ typedef struct {
     char name[64];
 } ShopWeaponData;
 
+/* heder.h で宣言されているのでコメントアウトして動作確認 
 extern int money;
 extern int can_item[];
 extern int can_weapon[];
 extern int level_of_story;
 extern void echof(const char* format, ...);
+*/
 
 /* 引数: item_id = CSVのアイテムID、out_item = 読み込み先 */
 static int load_shop_item_info(int item_id, ShopItemData* out_item) {
