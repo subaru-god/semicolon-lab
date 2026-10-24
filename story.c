@@ -113,14 +113,17 @@ int story_1(void) {
     can_weapon[1] = 1;
     echof("木の棒は装備品です。装備してみましょう");
     change();
-    echof("\nアイスの魔導書を受け取りました。");
+    echof("お母さんのお守りを受け取りました");
+    echof("\nただのお守りだけどきっとあなたを守ってくれるはずよ。");
+    echof("\n肌身離さず持っていなさい。");
+    echof("\n\nアイスの魔導書を受け取りました。");
     can_magics[1] = 1;
     echof("2.魔法 ＞1.アイス を選択して使えます。早速使ってみましょう");
     play_bgm("battle.mp3");
     battle(20);
     echof("使い方がわかったので町へ出てみてみましょう");
     can_item[1] = 1;
-    start_map_mode("サイショームラ.txt", 0, -1);
+    start_map_mode("サイショームラ.txt", 0, 0);
     return 0;
 }
 

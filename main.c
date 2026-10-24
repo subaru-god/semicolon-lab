@@ -31,12 +31,18 @@ int player_rest_hp = 100;
 #include "shop.c"
 #include "map.c"
 
-int main(void) {
+void main(int debug_mode) {
+
     configure_console_encoding();
     time(NULL);
     set_up();
     prologue();
     story_1();
-    debug();
+    if (debug_mode == 1) {
+        debug();
+    }
+    echof("ゲーム開始からここまで%d秒経過しました。", (int)time(NULL));
+    echof("ここまでお疲れ様でした。");
+    echof("ゲームを終了します。");
     return 0;
 }

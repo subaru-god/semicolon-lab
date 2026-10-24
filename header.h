@@ -1,8 +1,8 @@
+#pragma once //削除可能
+
 //重複してインクルードされるのを防ぐためのヘッダガード
 #ifndef SEMICOLON_LAB_HEADER_H
 #define SEMICOLON_LAB_HEADER_H
-
-#pragma once //削除可能
 
 #include <stdio.h>
 #include <time.h>
@@ -14,12 +14,12 @@
 #if defined(__unix__) || defined(__APPLE__)
     #include <iconv.h>
 #endif
-#include <stdio.h>
-#include <time.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
-#include <errno.h>
+    #include <stdio.h>
+    #include <time.h>
+    #include <stdlib.h>
+    #include <stdarg.h>
+    #include <string.h>
+    #include <errno.h>
 #if defined(__unix__) || defined(__APPLE__)
     #include <iconv.h>
 #endif
@@ -42,36 +42,37 @@
 #endif
 
 
-
 /* 引数: path = ファイルパス、mode = fopenのモード
  * WindowsではCP932、Linux/macOSではUTF-8でファイルを開く。 
  */
 static FILE* project_fopen(const char* path, const char* mode) {
-#if defined(__unix__) || defined(__APPLE__)
-    iconv_t converter = iconv_open("UTF-8", "CP932");
-    char utf8_path[4096];
-    char* input = (char*)path;
-    char* output = utf8_path;
-    size_t input_left = strlen(path);
-    size_t output_left = sizeof(utf8_path) - 1;
+    #if defined(__unix__) || defined(__APPLE__)
+        iconv_t converter = iconv_open("UTF-8", "CP932");
+        char utf8_path[4096];
+        char* input = (char*)path;
+        char* output = utf8_path;
+        size_t input_left = strlen(path);
+        size_t output_left = sizeof(utf8_path) - 1;
 
-    if (converter == (iconv_t)-1) {
-        perror("iconv_open");
-        return NULL;
-    }
-    if (iconv(converter, &input, &input_left, &output, &output_left) == (size_t)-1) {
-        int saved_errno = errno;
+        if (converter == (iconv_t)-1) {
+            perror("iconv_open");
+            return NULL;
+        }
+    
+        if (iconv(converter, &input, &input_left, &output, &output_left) == (size_t)-1) {
+            int saved_errno = errno;
+            iconv_close(converter);
+            errno = saved_errno;
+            perror("CP932 path conversion");
+            return NULL;
+        }
+
+        *output = '\0';
         iconv_close(converter);
-        errno = saved_errno;
-        perror("CP932 path conversion");
-        return NULL;
-    }
-    *output = '\0';
-    iconv_close(converter);
-    return fopen(utf8_path, mode);
-#else
-    return fopen(path, mode);
-#endif
+        return fopen(utf8_path, mode);
+    #else
+        return fopen(path, mode);
+    #endif
 }
 
 /* Windowsではfopenをproject_fopenに置き換える */
@@ -80,12 +81,13 @@ static FILE* project_fopen(const char* path, const char* mode) {
 /* コンソールの文字コードを設定する。
    WindowsではCP932、Linux/macOSではUTF-8を使用する。 */
 static void configure_console_encoding(void) {
-#ifdef _WIN32
-    SetConsoleCP(932);
-    SetConsoleOutputCP(932);
-#endif
+    #ifdef _WIN32
+        SetConsoleCP(932);
+        SetConsoleOutputCP(932);
+    #endif
 }
 
+/* 変数宣言 */
 extern char user_select;     // ユーザーの選択。
 extern char name[];          // プレイヤーの名前。
 extern char call_name[];     // プレイヤーの呼び名。
@@ -108,6 +110,9 @@ extern int can_weapon[];     // 使用可能な武器のフラグ。
 extern int can_item[];       // 使用可能なアイテムのフラグ。
 extern int player_hp;        // プレイヤーの最大HP。
 extern int player_rest_hp;   // プレイヤーの残りHP。
+
+
+/* 関数宣言 */
 
 /* 書式付きの文字列を表示する。
  引数: format = printf形式の書式文字列、後続の引数 = 書式指定に入れる値 */
