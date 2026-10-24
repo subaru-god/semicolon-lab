@@ -30,7 +30,13 @@ int player_rest_hp = 100;
 #include "shop.c"
 #include "map.c"
 
-int main(int debug_mode) {
+int main(int argc, char *argv[])
+{
+
+    int debug_mode = 0;
+    if (argc > 1 && strcmp(argv[1], "--debug") == 0) {
+        debug_mode = 1;
+    }
 
     if (debug_mode == 1) {
         echof("デバッグモードを有効にしました。");
