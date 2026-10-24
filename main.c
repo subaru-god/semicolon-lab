@@ -24,6 +24,13 @@ int player_rest_hp = 100;
 
 #include "header.h"
 
+#include "change.c"
+#include "sys.c"
+#include "story.c"
+#include "battle.c"
+#include "shop.c"
+#include "map.c"
+
 int main(void) {
     configure_console_encoding();
     time(NULL);

@@ -1,3 +1,4 @@
+#include "header.h"
 #define TILE_EMPTY  0
 #define TILE_WALL   1
 #define TILE_EVENT  2
@@ -26,12 +27,14 @@ typedef struct {
     int mp_heal;
 } MapItemData;
 
+/* heder.h で宣言されているのでコメントアウトして動作確認
 extern void echof(const char* format, ...);
 extern int battle(int e_id);
 extern int item_shop(int first_id, ...);
 extern int weapon_shop(int first_id, ...);
 extern int all_shop(int first_id, ...);
 extern int can_item[];
+*/
 
 /* 引数: x = コンソールの横位置、y = コンソールの縦位置 */
 static void set_cursor_pos(int x, int y) {

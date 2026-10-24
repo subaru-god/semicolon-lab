@@ -148,10 +148,3 @@ void prologue(void);
 int story_1(void);
 // デバッグメニューを実行する。
 int debug(void);
-
-#include "change.c"
-#include "sys.c"
-#include "story.c"
-#include "battle.c"
-#include "shop.c"
-#include "map.c"

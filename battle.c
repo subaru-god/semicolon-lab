@@ -1,3 +1,5 @@
+#include "header.h"
+
 typedef struct {
     int id;
     char name[32];
@@ -58,6 +60,7 @@ typedef struct {
     int mag_turns;
 } BuffStatus;
 
+/* heder.h で宣言されているのでコメントアウトして動作確認
 extern char name[];
 extern int can_magics[];
 extern int can_item[];
@@ -68,6 +71,7 @@ extern int player_hp;
 extern int player_rest_hp;
 extern void echof(const char* format, ...);
 extern void change(void);
+*/
 
 /* 引数: elem_id = 属性ID、out_elem = 属性関係データの格納先 */
 static int load_element_relation(int elem_id, ElementRelation* out_elem) {
