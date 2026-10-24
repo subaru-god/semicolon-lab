@@ -1,5 +1,7 @@
 {
     "code-runner.executorMap": {
-        "c": "cd \"$dir\" && gcc -finput-charset=CP932 -fexec-charset=CP932 \"$fileName\" -o \"$fileNameWithoutExt\" && script -qefc \"./$fileNameWithoutExt\" /dev/null | iconv -f CP932 -t UTF-8"
-    }
+        "c": "gcc -finput-charset=cp932 -fexec-charset=UTF-8 -o main main.c && ./main"
+    },
+    "code-runner.ignoreSelection": true,
+    "code-runner.runInTerminal": true
 }

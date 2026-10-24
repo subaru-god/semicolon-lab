@@ -85,5 +85,19 @@ void stop_bgm(void) {
 }
 
 void cls(void) {
+#ifdef _WIN32
+    HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO info;
+    DWORD written;
+    COORD origin = { 0, 0 };
+
+    if (GetConsoleScreenBufferInfo(output, &info)) {
+        DWORD cells = (DWORD)info.dwSize.X * (DWORD)info.dwSize.Y;
+        FillConsoleOutputCharacterA(output, ' ', cells, origin, &written);
+        FillConsoleOutputAttribute(output, info.wAttributes, cells, origin, &written);
+        SetConsoleCursorPosition(output, origin);
+        return;
+    }
+#endif
     printf("\033[2J\033[H");
 }

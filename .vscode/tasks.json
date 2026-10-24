@@ -1,5 +1,50 @@
 {
+    "version": "2.0.2",
     "tasks": [
+        {
+            "label": "main.cをコンパイルして実行",
+            "type": "shell",
+            "command": "gcc",
+            "args": [
+                "-finput-charset=cp932",
+                "-fexec-charset=UTF-8",
+                "-o",
+                "main",
+                "main.c"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "windows": {
+                "args": [
+                    "-finput-charset=cp932",
+                    "-fexec-charset=UTF-8",
+                    "-o",
+                    "main.exe",
+                    "main.c"
+                ]
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "main.cを実行",
+            "type": "shell",
+            "command": "./main",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "windows": {
+                "command": "main.exe"
+            },
+            "dependsOn": "main.cをコンパイルして実行",
+            "problemMatcher": []
+        },
         {
             "type": "cppbuild",
             "label": "C/C++: gcc アクティブなファイルのビルド",
@@ -23,6 +68,5 @@
             },
             "detail": "デバッガーによって生成されたタスク。"
         }
-    ],
-    "version": "2.0.0"
+    ]
 }

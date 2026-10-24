@@ -13,14 +13,11 @@
     #include <windows.h>
     #include <mmsystem.h>
     #include <conio.h>
-#elif  defined(__unix__) || defined(__APPLE__)
-    // Unix系ではtermios.hで端末を操作し、usleepで待機する。
+#elif defined(__unix__) || defined(__APPLE__) || defined(__linux__)
     #include <unistd.h>
     #include <termios.h>
-    #include <unistd.h>
     #define Sleep(ms) usleep((ms) * 1000)
 #else
-    // 対応していないプラットフォーム。
     #error "Unsupported platform"
 #endif
 
@@ -61,6 +58,13 @@ static FILE* project_fopen(const char* path, const char* mode) {
 }
 
 #define fopen project_fopen
+
+static void configure_console_encoding(void) {
+#ifdef _WIN32
+    SetConsoleCP(932);
+    SetConsoleOutputCP(932);
+#endif
+}
 
 extern char user_select;     // ユーザーの選択。
 extern char name[];          // プレイヤーの名前。
