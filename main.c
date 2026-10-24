@@ -30,11 +30,12 @@ int player_rest_hp = 100;
 #include "shop.c"
 #include "map.c"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 
     int debug_mode = 0;
-    if (argc == 1) {
+
+    if (argc == 2 && strcmp(argv[1], "1") == 0) {
         debug_mode = 1;
     }
 
