@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 {
 
     int debug_mode = 0;
-    if (argc > 1 && strcmp(argv[1], "--debug") == 0) {
+    if (argc == 1) {
         debug_mode = 1;
     }
 
