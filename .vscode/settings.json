@@ -1,7 +1,12 @@
 {
+    "files.encoding": "shiftjis",
+    "files.autoGuessEncoding": false,
     "code-runner.executorMap": {
         "c": "gcc -finput-charset=cp932 -fexec-charset=UTF-8 -o main main.c && ./main"
     },
     "code-runner.ignoreSelection": true,
-    "code-runner.runInTerminal": true
+    "code-runner.runInTerminal": true,
+    "python.autoComplete.extraPaths": [
+        "c:\\Users\\admin\\.vscode\\extensions\\continue.continue-0.0.412-win32-x64"
+    ]
 }
