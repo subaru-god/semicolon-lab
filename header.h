@@ -1,6 +1,4 @@
-#pragma once //削除可能
-
-//重複してインクルードされるのを防ぐためのヘッダガード
+#pragma once
 #ifndef SEMICOLON_LAB_HEADER_H
 #define SEMICOLON_LAB_HEADER_H
 
@@ -14,20 +12,12 @@
 #if defined(__unix__) || defined(__APPLE__)
     #include <iconv.h>
 #endif
-    #include <stdio.h>
-    #include <time.h>
-    #include <stdlib.h>
-    #include <stdarg.h>
-    #include <string.h>
-    #include <errno.h>
-#if defined(__unix__) || defined(__APPLE__)
-    #include <iconv.h>
-#endif
 
 #ifdef _WIN32
     #include <windows.h>
-    #include <mmsystem.h>
+    #include <io.h>
     #include <conio.h>
+    #define access _access
 #elif defined(__unix__) || defined(__APPLE__) || defined(__linux__)
     #include <unistd.h>
     #include <termios.h>
@@ -37,141 +27,86 @@
 #endif
 
 #if defined(_WIN32) && defined(_MSC_VER)
-    // MSVCでビルドする場合はWindowsのマルチメディアライブラリをリンクする。
     #pragma comment(lib, "winmm.lib")
 #endif
 
-
-/* 引数: path = ファイルパス、mode = fopenのモード
- * WindowsではCP932、Linux/macOSではUTF-8でファイルを開く。 
- */
 static FILE* project_fopen(const char* path, const char* mode) {
-    #if defined(__unix__) || defined(__APPLE__)
-        iconv_t converter = iconv_open("UTF-8", "CP932");
-        char utf8_path[4096];
-        char* input = (char*)path;
-        char* output = utf8_path;
-        size_t input_left = strlen(path);
-        size_t output_left = sizeof(utf8_path) - 1;
+#if defined(__unix__) || defined(__APPLE__)
+    iconv_t converter = iconv_open("UTF-8", "CP932");
+    char utf8_path[4096];
+    char* input = (char*)path;
+    char* output = utf8_path;
+    size_t input_left = strlen(path);
+    size_t output_left = sizeof(utf8_path) - 1;
 
-        if (converter == (iconv_t)-1) {
-            perror("iconv_open");
-            return NULL;
-        }
-    
-        if (iconv(converter, &input, &input_left, &output, &output_left) == (size_t)-1) {
-            int saved_errno = errno;
-            iconv_close(converter);
-            errno = saved_errno;
-            perror("CP932 path conversion");
-            return NULL;
-        }
-
-        *output = '\0';
+    if (converter == (iconv_t)-1) {
+        perror("iconv_open");
+        return NULL;
+    }
+    if (iconv(converter, &input, &input_left, &output, &output_left) == (size_t)-1) {
+        int saved_errno = errno;
         iconv_close(converter);
-        return fopen(utf8_path, mode);
-    #else
-        return fopen(path, mode);
-    #endif
+        errno = saved_errno;
+        perror("CP932 path conversion");
+        return NULL;
+    }
+    *output = '\0';
+    iconv_close(converter);
+    return fopen(utf8_path, mode);
+#else
+    return fopen(path, mode);
+#endif
 }
 
-/* Windowsではfopenをproject_fopenに置き換える */
 #define fopen project_fopen
 
-/* コンソールの文字コードを設定する。
-   WindowsではCP932、Linux/macOSではUTF-8を使用する。 */
 static void configure_console_encoding(void) {
-    #ifdef _WIN32
-        SetConsoleCP(932);
-        SetConsoleOutputCP(932);
-    #endif
+#ifdef _WIN32
+    SetConsoleCP(932);
+    SetConsoleOutputCP(932);
+#endif
 }
 
-/* 変数宣言 */
-extern char user_select;     // ユーザーの選択。
-extern char name[];          // プレイヤーの名前。
-extern char call_name[];     // プレイヤーの呼び名。
-extern int level_of_story;   // 選択したストーリーの難易度。
-extern int money;            // プレイヤーの所持金。
-extern int random_number;    // 汎用乱数。
-extern int random_number2;   // 予備の乱数。
-extern int cache;            // 汎用整数キャッシュ。
-extern int cache2;           // 予備の整数キャッシュ。
-extern int cache3[];         // 整数キャッシュ配列。
-extern char cache_str[];     // 汎用文字列キャッシュ。
-extern int result;           // 汎用の結果格納用変数。
-extern int ap;               // アクションポイント。
-extern int sum_ap;           // アクションポイントの合計。
-extern int m_ap;             // 現在の最大アクションポイント。
-extern int m_sum_ap;         // 最大アクションポイントの合計。
-extern int current_weapon_id;// 現在装備している武器のID。
-extern int can_magics[];     // 習得済み魔法のフラグ。
-extern int can_weapon[];     // 使用可能な武器のフラグ。
-extern int can_item[];       // 使用可能なアイテムのフラグ。
-extern int player_hp;        // プレイヤーの最大HP。
-extern int player_rest_hp;   // プレイヤーの残りHP。
+extern char user_select;
+extern char name[];
+extern char call_name[];
+extern int level_of_story;
+extern int money;
+extern int random_number;
+extern int random_number2;
+extern int cache;
+extern int cache2;
+extern int cache3[];
+extern char cache_str[];
+extern int result;
+extern int ap;
+extern int sum_ap;
+extern int m_ap;
+extern int m_sum_ap;
+extern int current_weapon_id;
+extern int can_magics[];
+extern int can_weapon[];
+extern int can_item[];
+extern int player_hp;
+extern int player_rest_hp;
 
-
-/* 関数宣言 */
-
-/* 書式付きの文字列を表示する。
- 引数: format = printf形式の書式文字列、後続の引数 = 書式指定に入れる値 */
 void echof(const char* format, ...);
-/* BGMを再生する。
- 引数: ファイル名 */
 void play_bgm(const char* filename);
-/* BGMを停止する。
- 引数: なし */
+void play_se(const char* filename);
+void log_music_load(const char* type, const char* filename,
+                    const char* program, const char* command,
+                    int system_status);
 void stop_bgm(void);
-// 端末の表示を消去する。
 void cls(void);
-// 指定した敵との戦闘を実行する。
 int battle(int e_id);
-/* アイテムショップを開く。
- 引数: first_id以降にアイテムIDを指定し、最後は-1で終了 */
 int item_shop(int first_id, ...);
-/* 武器ショップを開く。
- 引数: first_id以降に武器IDを指定し、最後は-1で終了 */
 int weapon_shop(int first_id, ...);
-/* 総合ショップを開く。
- 引数: 先にアイテムID、次に武器IDを指定し、それぞれ-1で終了 */
 int all_shop(int first_id, ...);
-/*
- * start_map_mode() の引数:
- *   filename  = マップファイル名。"random" の場合はランダムマップを生成する。
- *   spawn_id  = 通常マップで使用するプレイヤーの開始位置ID。
- *   has_enemy = 敵の有無。0 は敵なし、1 は敵あり。
- *
- * 通常マップの場合:
- *   start_map_mode("マップファイル名", spawn_id, 0);
- *   start_map_mode("マップファイル名", spawn_id, 1, 敵ID, 敵ID, ..., -1);
- *
- * "random" の場合:
- *   敵あり:
- *     start_map_mode("random", 0, 1,
- *                    敵ID, 敵ID, ..., -1,
- *                    イベント記号, イベント説明文,
- *                    イベント記号, イベント説明文, ..., -1);
- *   敵なし:
- *     start_map_mode("random", 0, 0,
- *                    イベント記号, イベント説明文,
- *                    イベント記号, イベント説明文, ..., -1);
- *
- * 敵IDの一覧は -1 で終了する。イベントは「記号」と「説明文」を
- * 必ずペアで指定し、最後に -1 を指定して終了する。
- * 例: start_map_mode("random", 0, 1, 20, 21, 22, -1,
- *                    'I', "アイテムショップ", 'B', "バトル", -1);
- */
 void start_map_mode(const char* filename, int spawn_id, int has_enemy, ...);
-// プレイヤーの装備を変更する。
 void change(void);
-// ゲームデータを初期化する。
 void set_up(void);
-// プロローグを実行する。
 void prologue(void);
-// メインストーリーを実行する。
 int story_1(void);
-// デバッグメニューを実行する。
 int debug(void);
 
-#endif /* SEMICOLON_LAB_HEADER_H */
+#endif

@@ -25,6 +25,8 @@ int player_rest_hp = 100;
 
 #include "change.c"
 #include "sys.c"
+#define SEMICOLON_LOAD_MUSIC_EMBEDDED
+#include "load_music.c"
 #include "story.c"
 #include "battle.c"
 #include "shop.c"
@@ -40,7 +42,7 @@ int main(int argc, char* argv[])
     }
 
     if (debug_mode == 1) {
-        echof("ƒfƒoƒbƒOƒ‚[ƒh‚ğ—LŒø‚É‚µ‚Ü‚µ‚½B");
+        echof("ï¿½fï¿½oï¿½bï¿½Oï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½Lï¿½ï¿½ï¿½É‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½ï¿½B");
         cls();
     }
 
@@ -52,8 +54,8 @@ int main(int argc, char* argv[])
     if (debug_mode == 1) {
         debug();
     }
-    echof("ƒQ[ƒ€ŠJn‚©‚ç‚±‚±‚Ü‚Å%d•bŒo‰ß‚µ‚Ü‚µ‚½B", (int)time(NULL));
-    echof("‚±‚±‚Ü‚Å‚¨”æ‚ê—l‚Å‚µ‚½B");
-    echof("ƒQ[ƒ€‚ğI—¹‚µ‚Ü‚·B");
+    echof("ï¿½Qï¿½[ï¿½ï¿½ï¿½Jï¿½nï¿½ï¿½ï¿½ç‚±ï¿½ï¿½ï¿½Ü‚ï¿½%dï¿½bï¿½oï¿½ß‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½ï¿½B", (int)time(NULL));
+    echof("ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚Å‚ï¿½ï¿½ï¿½ï¿½lï¿½Å‚ï¿½ï¿½ï¿½ï¿½B");
+    echof("ï¿½Qï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B");
     return 0;
 }
