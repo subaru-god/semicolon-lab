@@ -53,8 +53,9 @@ static void speak_text(const char* text) {
 #else
     snprintf(command, sizeof(command),
         "ESPEAK_DATA_PATH=\"runtime/usr/share/espeak-ng-data\" "
-        "LD_LIBRARY_PATH=\"runtime/lib:runtime/usr/lib:runtime/lib/x86_64-linux-gnu:"
-        "runtime/usr/lib/x86_64-linux-gnu\" \"%s\" -v ja -f \"%s\" >/dev/null 2>&1 &",
+        "LD_LIBRARY_PATH=\"/usr/lib/x86_64-linux-gnu:runtime/lib:runtime/usr/lib:"
+        "runtime/lib/x86_64-linux-gnu:runtime/usr/lib/x86_64-linux-gnu\" "
+        "\"%s\" -v ja -f \"%s\" >/dev/null 2>&1 &",
         audio_program("espeak-ng"), speech_file);
 #endif
     if (system(command) == -1) {
