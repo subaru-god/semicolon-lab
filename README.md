@@ -22,3 +22,10 @@ runtime/voice/mei_normal.htsvoice
 
 `miniaudio.h`はリポジトリに同梱しています。`play_bgm()`はループ再生、
 `play_se()`は最大16音まで重ねて再生します。
+
+Linuxで手動ビルドする場合は、miniaudioが使用する数学・動的ロード・スレッド
+ライブラリをリンクしてください。
+
+```sh
+gcc main.c -o main -lm -ldl -lpthread
+```

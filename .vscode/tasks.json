@@ -10,7 +10,10 @@
                 "-fexec-charset=UTF-8",
                 "-o",
                 "main",
-                "main.c"
+                "main.c",
+                "-lm",
+                "-ldl",
+                "-lpthread"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -54,7 +57,10 @@
                 "-g",
                 "${file}",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "${fileDirname}/${fileBasenameNoExtension}",
+                "-lm",
+                "-ldl",
+                "-lpthread"
             ],
             "options": {
                 "cwd": "${fileDirname}"
