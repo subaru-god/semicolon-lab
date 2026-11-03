@@ -60,7 +60,7 @@ typedef struct {
     int mag_turns;
 } BuffStatus;
 
-/* heder.h ‚ÅéŒ¾‚³‚ê‚Ä‚¢‚é‚Ì‚ÅƒRƒƒ“ƒgƒAƒEƒg‚µ‚Ä“®ìŠm”F
+/* heder.h ã§å®£è¨€ã•ã‚Œã¦ã„ã‚‹ã®ã§ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã—ã¦å‹•ä½œç¢ºèª
 extern char name[];
 extern int can_magics[];
 extern int can_item[];
@@ -73,9 +73,9 @@ extern void echof(const char* format, ...);
 extern void change(void);
 */
 
-/* ˆø”: elem_id = ‘®«IDAout_elem = ‘®«ŠÖŒWƒf[ƒ^‚ÌŠi”[æ */
+/* å¼•æ•°: elem_id = å±æ€§IDã€out_elem = å±æ€§é–¢ä¿‚ãƒ‡ãƒ¼ã‚¿ã®æ ¼ç´å…ˆ */
 static int load_element_relation(int elem_id, ElementRelation* out_elem) {
-    FILE* fp = fopen("‘®«‘Î‰.csv", "r");
+    FILE* fp = fopen("å±æ€§å¯¾å¿œ.csv", "r");
     char line[256];
     char* token;
 
@@ -98,7 +98,7 @@ static int load_element_relation(int elem_id, ElementRelation* out_elem) {
     return 0;
 }
 
-/* ˆø”: atk_elem_id = UŒ‚‘¤‘®«IDAdef_elem_id = –hŒä‘¤‘®«ID */
+/* å¼•æ•°: atk_elem_id = æ”»æ’ƒå´å±æ€§IDã€def_elem_id = é˜²å¾¡å´å±æ€§ID */
 static float get_element_multiplier(int atk_elem_id, int def_elem_id) {
     ElementRelation atk_rel;
     if (atk_elem_id <= 0 || def_elem_id <= 0) return 1.0f;
@@ -115,9 +115,9 @@ static float get_element_multiplier(int atk_elem_id, int def_elem_id) {
     return 1.0f;
 }
 
-/* ˆø”: item_id = CSV‚ÌƒAƒCƒeƒ€IDAout_item = “Ç‚İ‚İæ */
+/* å¼•æ•°: item_id = CSVã®ã‚¢ã‚¤ãƒ†ãƒ IDã€out_item = èª­ã¿è¾¼ã¿å…ˆ */
 static int load_item_info(int item_id, ItemData* out_item) {
-    FILE* fp = fopen("ƒAƒCƒeƒ€.csv", "r");
+    FILE* fp = fopen("ã‚¢ã‚¤ãƒ†ãƒ .csv", "r");
     char line[256], * token;
     if (!fp) return 0;
     fgets(line, sizeof(line), fp);
@@ -137,9 +137,9 @@ static int load_item_info(int item_id, ItemData* out_item) {
     fclose(fp); return 0;
 }
 
-/* ˆø”: weapon_id = •ŠíIDAout_wep = •ŠíŒø‰Êƒf[ƒ^‚ÌŠi”[æ */
+/* å¼•æ•°: weapon_id = æ­¦å™¨IDã€out_wep = æ­¦å™¨åŠ¹æœãƒ‡ãƒ¼ã‚¿ã®æ ¼ç´å…ˆ */
 static int load_weapon_effect(int weapon_id, WeaponEffectData* out_wep) {
-    FILE* fp = fopen("•Ší.csv", "r");
+    FILE* fp = fopen("æ­¦å™¨.csv", "r");
     char line[512], * token;
     if (weapon_id <= 0 || !fp) return 0;
     fgets(line, sizeof(line), fp);
@@ -168,9 +168,9 @@ static int load_weapon_effect(int weapon_id, WeaponEffectData* out_wep) {
     fclose(fp); return 0;
 }
 
-/* ˆø”: target_id = “GIDAout_enemy = “Gƒf[ƒ^‚ÌŠi”[æ */
+/* å¼•æ•°: target_id = æ•µIDã€out_enemy = æ•µãƒ‡ãƒ¼ã‚¿ã®æ ¼ç´å…ˆ */
 static int load_enemy_info(int target_id, EnemyData* out_enemy) {
-    FILE* fp = fopen("“G.csv", "r");
+    FILE* fp = fopen("æ•µ.csv", "r");
     char line[512], * token;
     int i;
     if (!fp) return 0;
@@ -194,7 +194,7 @@ static int load_enemy_info(int target_id, EnemyData* out_enemy) {
     fclose(fp); return 0;
 }
 
-/* ˆø”: str = Œ³‚Ì•¶š—ñAout_power/out_turns = ‰ğÍŒ‹‰ÊAparent_id = ƒXƒLƒ‹•ª—Ş */
+/* å¼•æ•°: str = å…ƒã®æ–‡å­—åˆ—ã€out_power/out_turns = è§£æçµæœã€parent_id = ã‚¹ã‚­ãƒ«åˆ†é¡ */
 static void parse_power_and_turns(const char* str, float* out_power, int* out_turns, int parent_id) {
     char buf[64];
     char* comma;
@@ -225,9 +225,9 @@ static void parse_power_and_turns(const char* str, float* out_power, int* out_tu
     }
 }
 
-/* ˆø”: skill_id = ƒXƒLƒ‹IDAout_skill = ƒXƒLƒ‹ƒf[ƒ^‚ÌŠi”[æ */
+/* å¼•æ•°: skill_id = ã‚¹ã‚­ãƒ«IDã€out_skill = ã‚¹ã‚­ãƒ«ãƒ‡ãƒ¼ã‚¿ã®æ ¼ç´å…ˆ */
 static int load_skill_info(int skill_id, SkillData* out_skill) {
-    FILE* fp = fopen("‹Zˆê——.csv", "r");
+    FILE* fp = fopen("æŠ€ä¸€è¦§.csv", "r");
     char line[512], * token;
     char power_str[64] = "";
     if (!fp) return 0;
@@ -252,46 +252,46 @@ static int load_skill_info(int skill_id, SkillData* out_skill) {
     fclose(fp); return 0;
 }
 
-/* ˆø”: buff = XV‚·‚éó‘ÔAentity_name = ƒƒbƒZ[ƒW‚É•\¦‚·‚é–¼‘O */
+/* å¼•æ•°: buff = æ›´æ–°ã™ã‚‹çŠ¶æ…‹ã€entity_name = ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«è¡¨ç¤ºã™ã‚‹åå‰ */
 static void update_buff_status(BuffStatus* buff, const char* entity_name) {
     if (buff->atk_turns > 0 && --buff->atk_turns == 0) {
         buff->atk_rate = 1.0f;
-        echof("%s ‚ÌUŒ‚—ÍƒAƒbƒvŒø‰Ê‚ªØ‚ê‚½B\n", entity_name);
+        echof("%s ã®æ”»æ’ƒåŠ›ã‚¢ãƒƒãƒ—åŠ¹æœãŒåˆ‡ã‚ŒãŸã€‚\n", entity_name);
     }
     if (buff->def_turns > 0 && --buff->def_turns == 0) {
         buff->def_rate = 1.0f;
-        echof("%s ‚Ì–hŒä—ÍƒAƒbƒvŒø‰Ê‚ªØ‚ê‚½B\n", entity_name);
+        echof("%s ã®é˜²å¾¡åŠ›ã‚¢ãƒƒãƒ—åŠ¹æœãŒåˆ‡ã‚ŒãŸã€‚\n", entity_name);
     }
     if (buff->mag_turns > 0 && --buff->mag_turns == 0) {
         buff->mag_rate = 1.0f;
-        echof("%s ‚Ì–‚–@Œø‰ÊƒAƒbƒvŒø‰Ê‚ªØ‚ê‚½B\n", entity_name);
+        echof("%s ã®é­”æ³•åŠ¹æœã‚¢ãƒƒãƒ—åŠ¹æœãŒåˆ‡ã‚ŒãŸã€‚\n", entity_name);
     }
 }
 
-/* ˆø”: buff = •ÏX‚·‚éó‘ÔAparent_id = ‹­‰»í—ŞArate/turns = Œø‰ÊAentity_name = •\¦–¼ */
+/* å¼•æ•°: buff = å¤‰æ›´ã™ã‚‹çŠ¶æ…‹ã€parent_id = å¼·åŒ–ç¨®é¡ã€rate/turns = åŠ¹æœã€entity_name = è¡¨ç¤ºå */
 static void apply_buff(BuffStatus* buff, int parent_id, float rate, int turns, const char* entity_name) {
     switch (parent_id) {
     case 9:
         buff->atk_rate = rate; buff->atk_turns = turns;
-        echof("%s ‚ÌUŒ‚—Í‚ª %.1f ”{‚Éã‚ª‚Á‚½I (%dƒ^[ƒ“‘±)\n", entity_name, rate, turns);
+        echof("%s ã®æ”»æ’ƒåŠ›ãŒ %.1f å€ã«ä¸ŠãŒã£ãŸï¼ (%dã‚¿ãƒ¼ãƒ³æŒç¶š)\n", entity_name, rate, turns);
         break;
     case 10:
         buff->def_rate = rate; buff->def_turns = turns;
-        echof("%s ‚Ì–hŒä—Í‚ª %.1f ”{‚Éã‚ª‚Á‚½I (%dƒ^[ƒ“‘±)\n", entity_name, rate, turns);
+        echof("%s ã®é˜²å¾¡åŠ›ãŒ %.1f å€ã«ä¸ŠãŒã£ãŸï¼ (%dã‚¿ãƒ¼ãƒ³æŒç¶š)\n", entity_name, rate, turns);
         break;
     case 11:
         buff->atk_rate = rate; buff->atk_turns = turns;
         buff->def_rate = rate; buff->def_turns = turns;
-        echof("%s ‚ÌUŒ‚—Í‚Æ–hŒä—Í‚ª %.1f ”{‚Éã‚ª‚Á‚½I (%dƒ^[ƒ“‘±)\n", entity_name, rate, turns);
+        echof("%s ã®æ”»æ’ƒåŠ›ã¨é˜²å¾¡åŠ›ãŒ %.1f å€ã«ä¸ŠãŒã£ãŸï¼ (%dã‚¿ãƒ¼ãƒ³æŒç¶š)\n", entity_name, rate, turns);
         break;
     case 12:
         buff->mag_rate = rate; buff->mag_turns = turns;
-        echof("%s ‚Ì–‚–@Œø‰Ê‚ª %.1f ”{‚Éã‚ª‚Á‚½I (%dƒ^[ƒ“‘±)\n", entity_name, rate, turns);
+        echof("%s ã®é­”æ³•åŠ¹æœãŒ %.1f å€ã«ä¸ŠãŒã£ãŸï¼ (%dã‚¿ãƒ¼ãƒ³æŒç¶š)\n", entity_name, rate, turns);
         break;
     }
 }
 
-/* ˆø”: HP/MP‚Ìƒ|ƒCƒ“ƒ^A“G‚Ì–¼‘O‚Æ‘®«AƒvƒŒƒCƒ„[‚Æ“G‚Ì‹­‰»ó‘Ô */
+/* å¼•æ•°: HP/MPã®ãƒã‚¤ãƒ³ã‚¿ã€æ•µã®åå‰ã¨å±æ€§ã€ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨æ•µã®å¼·åŒ–çŠ¶æ…‹ */
 static int select_magic_phase(int* e_rest_hp, const char* e_name, int* player_mp, int enemy_element_id, BuffStatus* p_buff, BuffStatus* e_buff) {
     SkillData learned_skills[100];
     WeaponEffectData wep;
@@ -303,30 +303,30 @@ static int select_magic_phase(int* e_rest_hp, const char* e_name, int* player_mp
             if (++count >= 100) break;
         }
     }
-    if (count == 0) { echof("\n–‚–@E“Á‹Z‚ğŠo‚¦‚Ä‚¢‚Ü‚¹‚ñB\n"); return 0; }
+    if (count == 0) { echof("\né­”æ³•ãƒ»ç‰¹æŠ€ã‚’è¦šãˆã¦ã„ã¾ã›ã‚“ã€‚\n"); return 0; }
 
-    printf("\n--- –‚–@E“Á‹Z‘I‘ğ ---\n");
+    printf("\n--- é­”æ³•ãƒ»ç‰¹æŠ€é¸æŠ ---\n");
     for (i = 0; i < count; i++) {
         if (learned_skills[i].is_buff) {
-            printf("%d. %s (•K—vMP: %d / Œø‰Ê: ~%.2f %dƒ^[ƒ“)\n", i + 1, learned_skills[i].name, learned_skills[i].mp_cost, learned_skills[i].power_rate, learned_skills[i].buff_turns);
+            printf("%d. %s (å¿…è¦MP: %d / åŠ¹æœ: Ã—%.2f %dã‚¿ãƒ¼ãƒ³)\n", i + 1, learned_skills[i].name, learned_skills[i].mp_cost, learned_skills[i].power_rate, learned_skills[i].buff_turns);
         }
         else {
-            printf("%d. %s (•K—vMP: %d / ˆĞ—Í: %.0f)\n", i + 1, learned_skills[i].name, learned_skills[i].mp_cost, learned_skills[i].power_rate);
+            printf("%d. %s (å¿…è¦MP: %d / å¨åŠ›: %.0f)\n", i + 1, learned_skills[i].name, learned_skills[i].mp_cost, learned_skills[i].power_rate);
         }
     }
-    printf("0. ‚â‚ß‚é\n‘I‘ğ > ");
+    printf("0. ã‚„ã‚ã‚‹\né¸æŠ > ");
     if (scanf("%d", &choice) != 1) { while (getchar() != '\n'); return 0; }
     while (getchar() != '\n');
     if (choice <= 0 || choice > count) return 0;
     choice--;
 
     if (*player_mp < learned_skills[choice].mp_cost) {
-        echof("\nMP‚ª•s‘«‚µ‚Ä‚¢‚Ü‚·B\n"); return 0;
+        echof("\nMPãŒä¸è¶³ã—ã¦ã„ã¾ã™ã€‚\n"); return 0;
     }
     *player_mp -= learned_skills[choice].mp_cost;
 
     if (learned_skills[choice].is_buff) {
-        echof("\n%s‚Ì%sI\n", name, learned_skills[choice].name);
+        echof("\n%sã®%sï¼\n", name, learned_skills[choice].name);
         apply_buff(p_buff, learned_skills[choice].parent_id, learned_skills[choice].power_rate, learned_skills[choice].buff_turns, name);
         return 1;
     }
@@ -347,12 +347,12 @@ static int select_magic_phase(int* e_rest_hp, const char* e_name, int* player_mp
     damage = (int)(damage * mult);
     if (e_buff->def_rate > 1.0f) damage = (int)(damage / e_buff->def_rate);
 
-    echof("\n%s‚Ì%sI\n%s‚É %d ‚Ìƒ_ƒ[ƒWI(”{—¦: %.2f”{)\n", name, learned_skills[choice].name, e_name, damage, mult);
+    echof("\n%sã®%sï¼\n%sã« %d ã®ãƒ€ãƒ¡ãƒ¼ã‚¸ï¼(å€ç‡: %.2få€)\n", name, learned_skills[choice].name, e_name, damage, mult);
     *e_rest_hp -= damage;
     return 1;
 }
 
-/* ˆø”: player_mp = Œ»İMPAmax_mp = Å‘åMP */
+/* å¼•æ•°: player_mp = ç¾åœ¨MPã€max_mp = æœ€å¤§MP */
 static int select_item_phase_battle(int* player_mp, int max_mp) {
     ItemData items[100];
     int count = 0, i, choice;
@@ -366,13 +366,13 @@ static int select_item_phase_battle(int* player_mp, int max_mp) {
             }
         }
     }
-    if (count == 0) { echof("\ní“¬’†‚Ég‚¦‚éƒAƒCƒeƒ€‚ğ‚Á‚Ä‚¢‚Ü‚¹‚ñI\n"); return 0; }
+    if (count == 0) { echof("\næˆ¦é—˜ä¸­ã«ä½¿ãˆã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã‚’æŒã£ã¦ã„ã¾ã›ã‚“ï¼\n"); return 0; }
 
-    printf("\n--- í“¬—pƒAƒCƒeƒ€ˆê—— ---\n");
+    printf("\n--- æˆ¦é—˜ç”¨ã‚¢ã‚¤ãƒ†ãƒ ä¸€è¦§ ---\n");
     for (i = 0; i < count; i++) {
-        printf("%d. %s (Š”:%d) [‰ñ•œ HP:%d / MP:%d]\n", i + 1, items[i].name, can_item[items[i].id], items[i].hp_heal, items[i].mp_heal);
+        printf("%d. %s (æ‰€æŒæ•°:%d) [å›å¾© HP:%d / MP:%d]\n", i + 1, items[i].name, can_item[items[i].id], items[i].hp_heal, items[i].mp_heal);
     }
-    printf("0. –ß‚é\nƒAƒCƒeƒ€‚ğ‘I‘ğ > ");
+    printf("0. æˆ»ã‚‹\nã‚¢ã‚¤ãƒ†ãƒ ã‚’é¸æŠ > ");
     if (scanf("%d", &choice) != 1) { while (getchar() != '\n'); return 0; }
     while (getchar() != '\n');
     if (choice <= 0 || choice > count) return 0;
@@ -387,12 +387,12 @@ static int select_item_phase_battle(int* player_mp, int max_mp) {
         if (*player_mp > max_mp) *player_mp = max_mp;
     }
 
-    echof("\n%s ‚ğg—p‚µ‚½I (HP:%d / MP:%d ‰ñ•œ)\n", items[choice].name, items[choice].hp_heal, items[choice].mp_heal);
+    echof("\n%s ã‚’ä½¿ç”¨ã—ãŸï¼ (HP:%d / MP:%d å›å¾©)\n", items[choice].name, items[choice].hp_heal, items[choice].mp_heal);
     can_item[items[choice].id]--;
     return 1;
 }
 
-/* ˆø”: enemy = s“®‚·‚é“GAe_buff/p_buff = “G‚ÆƒvƒŒƒCƒ„[‚Ì‹­‰»ó‘Ô */
+/* å¼•æ•°: enemy = è¡Œå‹•ã™ã‚‹æ•µã€e_buff/p_buff = æ•µã¨ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å¼·åŒ–çŠ¶æ…‹ */
 static void enemy_turn_action(const EnemyData* enemy, BuffStatus* e_buff, BuffStatus* p_buff) {
     float r = (float)rand() / RAND_MAX;
     float cumulative = 0.0f;
@@ -411,7 +411,7 @@ static void enemy_turn_action(const EnemyData* enemy, BuffStatus* e_buff, BuffSt
 
     if (selected_skill_id > 0 && load_skill_info(selected_skill_id, &e_skill)) {
         if (e_skill.is_buff) {
-            echof("%s‚Í %s ‚ğ¥‚¦‚½I\n", enemy->name, e_skill.name);
+            echof("%sã¯ %s ã‚’å”±ãˆãŸï¼\n", enemy->name, e_skill.name);
             apply_buff(e_buff, e_skill.parent_id, e_skill.power_rate, e_skill.buff_turns, enemy->name);
         }
         else {
@@ -420,7 +420,7 @@ static void enemy_turn_action(const EnemyData* enemy, BuffStatus* e_buff, BuffSt
             damage = (int)(damage * get_element_multiplier(e_skill.parent_id, 8));
             if (p_buff->def_rate > 1.0f) damage = (int)(damage / p_buff->def_rate);
 
-            echof("%s‚Í %s ‚ğ•ú‚Á‚½I %s‚Í %d ‚Ìƒ_ƒ[ƒW‚ğó‚¯‚½I\n", enemy->name, e_skill.name, name, damage);
+            echof("%sã¯ %s ã‚’æ”¾ã£ãŸï¼ %sã¯ %d ã®ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ãŸï¼\n", enemy->name, e_skill.name, name, damage);
             player_rest_hp -= damage;
         }
     }
@@ -428,7 +428,7 @@ static void enemy_turn_action(const EnemyData* enemy, BuffStatus* e_buff, BuffSt
         random_number2 = rand() % 10 + 5;
         damage = (int)(random_number2 * e_buff->atk_rate);
         if (p_buff->def_rate > 1.0f) damage = (int)(damage / p_buff->def_rate);
-        echof("%s‚ÌUŒ‚I %s‚Í %d ‚Ìƒ_ƒ[ƒW‚ğó‚¯‚½I\n", enemy->name, name, damage);
+        echof("%sã®æ”»æ’ƒï¼ %sã¯ %d ã®ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ãŸï¼\n", enemy->name, name, damage);
         player_rest_hp -= damage;
     }
 }
@@ -444,7 +444,7 @@ int battle(int e_id) {
     srand((unsigned int)time(NULL));
 
     if (!load_enemy_info(e_id, &enemy)) {
-        strcpy(enemy.name, "ƒXƒ‰ƒCƒ€");
+        strcpy(enemy.name, "ã‚¹ãƒ©ã‚¤ãƒ ");
         enemy.hp = 30;
         enemy.element_id = 1;
         enemy.skill_ids[0] = 0; enemy.skill_probs[0] = 1.0f;
@@ -453,7 +453,7 @@ int battle(int e_id) {
     e_rest_hp = e_hp;
 
     cls();
-    echof("==================== \n %s ‚ªŒ»‚ê‚½!\n==================== \n\n", enemy.name);
+    echof("==================== \n %s ãŒç¾ã‚ŒãŸ!\n==================== \n\n", enemy.name);
 
     while (e_rest_hp > 0 && player_rest_hp > 0) {
         cls();
@@ -461,23 +461,23 @@ int battle(int e_id) {
         printf("%s HP %d/%d  VS  %s HP %d/%d (MP:%d/%d)\n", enemy.name, e_rest_hp, e_hp, name, player_rest_hp, player_hp, player_mp, max_mp);
 
         if (p_buff.atk_turns > 0 || p_buff.def_turns > 0 || p_buff.mag_turns > 0) {
-            printf("[©•ªƒoƒt] ");
-            if (p_buff.atk_turns > 0) printf("U~%.1f(%dƒ^[ƒ“) ", p_buff.atk_rate, p_buff.atk_turns);
-            if (p_buff.def_turns > 0) printf("–h~%.1f(%dƒ^[ƒ“) ", p_buff.def_rate, p_buff.def_turns);
-            if (p_buff.mag_turns > 0) printf("–‚~%.1f(%dƒ^[ƒ“) ", p_buff.mag_rate, p_buff.mag_turns);
+            printf("[è‡ªåˆ†ãƒãƒ•] ");
+            if (p_buff.atk_turns > 0) printf("æ”»Ã—%.1f(%dã‚¿ãƒ¼ãƒ³) ", p_buff.atk_rate, p_buff.atk_turns);
+            if (p_buff.def_turns > 0) printf("é˜²Ã—%.1f(%dã‚¿ãƒ¼ãƒ³) ", p_buff.def_rate, p_buff.def_turns);
+            if (p_buff.mag_turns > 0) printf("é­”Ã—%.1f(%dã‚¿ãƒ¼ãƒ³) ", p_buff.mag_rate, p_buff.mag_turns);
             printf("\n");
         }
         if (e_buff.atk_turns > 0 || e_buff.def_turns > 0 || e_buff.mag_turns > 0) {
-            printf("[“Gƒoƒt] ");
-            if (e_buff.atk_turns > 0) printf("U~%.1f(%dƒ^[ƒ“) ", e_buff.atk_rate, e_buff.atk_turns);
-            if (e_buff.def_turns > 0) printf("–h~%.1f(%dƒ^[ƒ“) ", e_buff.def_rate, e_buff.def_turns);
-            if (e_buff.mag_turns > 0) printf("–‚~%.1f(%dƒ^[ƒ“) ", e_buff.mag_rate, e_buff.mag_turns);
+            printf("[æ•µãƒãƒ•] ");
+            if (e_buff.atk_turns > 0) printf("æ”»Ã—%.1f(%dã‚¿ãƒ¼ãƒ³) ", e_buff.atk_rate, e_buff.atk_turns);
+            if (e_buff.def_turns > 0) printf("é˜²Ã—%.1f(%dã‚¿ãƒ¼ãƒ³) ", e_buff.def_rate, e_buff.def_turns);
+            if (e_buff.mag_turns > 0) printf("é­”Ã—%.1f(%dã‚¿ãƒ¼ãƒ³) ", e_buff.mag_rate, e_buff.mag_turns);
             printf("\n");
         }
         printf("----------------------------------------\n");
 
         do {
-            printf("‰½‚ğ‚·‚éH\n‚P.’ÊíUŒ‚\n‚Q.–‚–@E“Á‹Z\n‚R.ƒAƒCƒeƒ€\n‚S.‘•”õ•ÏX\n‚T.“¦‚°‚é\n“ü—Í > ");
+            printf("ä½•ã‚’ã™ã‚‹ï¼Ÿ\nï¼‘.é€šå¸¸æ”»æ’ƒ\nï¼’.é­”æ³•ãƒ»ç‰¹æŠ€\nï¼“.ã‚¢ã‚¤ãƒ†ãƒ \nï¼”.è£…å‚™å¤‰æ›´\nï¼•.é€ƒã’ã‚‹\nå…¥åŠ› > ");
             select = (char)getchar();
             while (getchar() != '\n');
         } while (select < '1' || select > '5');
@@ -491,24 +491,24 @@ int battle(int e_id) {
             damage = (int)((sum_ap * rnd2 / 100.0f) * p_buff.atk_rate);
 
             if (rnd1 >= 78) {
-                printf("\nƒNƒŠƒeƒBƒJƒ‹UŒ‚II\n");
+                printf("\nã‚¯ãƒªãƒ†ã‚£ã‚«ãƒ«æ”»æ’ƒï¼ï¼\n");
                 damage *= 2;
             }
             else {
-                printf("\n’ÊíUŒ‚I\n");
+                printf("\né€šå¸¸æ”»æ’ƒï¼\n");
             }
 
             {
                 WeaponEffectData wep;
                 if (load_weapon_effect(current_weapon_id, &wep) && strlen(wep.effective_target) > 0 && strstr(enemy.name, wep.effective_target) != NULL) {
                     damage = (int)(damage * wep.effective_rate);
-                    printf("y“ÁŒø”­“®Iz");
+                    printf("ã€ç‰¹åŠ¹ç™ºå‹•ï¼ã€‘");
                 }
             }
 
             if (e_buff.def_rate > 1.0f) damage = (int)(damage / e_buff.def_rate);
 
-            echof("%s‚É %d ƒ_ƒ[ƒW‚ğ—^‚¦‚½I\n", enemy.name, damage);
+            echof("%sã« %d ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆãŸï¼\n", enemy.name, damage);
             e_rest_hp -= damage;
             turn_acted = 1;
             break;
@@ -526,7 +526,7 @@ int battle(int e_id) {
             break;
 
         case '5':
-            echof("\n%s‚Í“¦‚°o‚µ‚½I\n", name);
+            echof("\n%sã¯é€ƒã’å‡ºã—ãŸï¼\n", name);
             cls();
             return 0;
         }
@@ -539,12 +539,12 @@ int battle(int e_id) {
     }
 
     if (e_rest_hp <= 0) {
-        echof("\n%s‚ğ“|‚µ‚½IŸ—˜I\n", enemy.name);
+        echof("\n%sã‚’å€’ã—ãŸï¼å‹åˆ©ï¼\n", enemy.name);
         cls();
         return 1;
     }
     else {
-        echof("\n%s‚Í“|‚ê‚Ä‚µ‚Ü‚Á‚½...\n", name);
+        echof("\n%sã¯å€’ã‚Œã¦ã—ã¾ã£ãŸ...\n", name);
         cls();
         return 0;
     }

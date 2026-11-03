@@ -93,10 +93,8 @@ extern int player_rest_hp;
 void echof(const char* format, ...);
 void play_bgm(const char* filename);
 void play_se(const char* filename);
-void log_music_load(const char* type, const char* filename,
-                    const char* program, const char* command,
-                    int system_status);
 void stop_bgm(void);
+void audio_shutdown(void);
 void cls(void);
 int battle(int e_id);
 int item_shop(int first_id, ...);

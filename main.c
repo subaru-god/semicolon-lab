@@ -24,9 +24,7 @@ int player_rest_hp = 100;
 #include "header.h"
 
 #include "change.c"
-#include "sys.c"
-#define SEMICOLON_LOAD_MUSIC_EMBEDDED
-#include "load_music.c"
+#include "audio.c"
 #include "story.c"
 #include "battle.c"
 #include "shop.c"
@@ -42,7 +40,7 @@ int main(int argc, char* argv[])
     }
 
     if (debug_mode == 1) {
-        echof("�f�o�b�O���[�h��L���ɂ��܂����B");
+        echof("デバッグモードを有効にしました。");
         cls();
     }
 
@@ -54,8 +52,9 @@ int main(int argc, char* argv[])
     if (debug_mode == 1) {
         debug();
     }
-    echof("�Q�[���J�n���炱���܂�%d�b�o�߂��܂����B", (int)time(NULL));
-    echof("�����܂ł����l�ł����B");
-    echof("�Q�[�����I�����܂��B");
+    echof("ゲーム開始からここまで%d秒お疲れさまでした。", (int)time(NULL));
+    echof("これまでお疲れさまでした。");
+    echof("ゲームを終了します。");
+    audio_shutdown();
     return 0;
 }
