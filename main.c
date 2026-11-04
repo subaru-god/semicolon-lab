@@ -39,12 +39,12 @@ int main(int argc, char* argv[])
         debug_mode = 1;
     }
 
+    configure_console_encoding();
     if (debug_mode == 1) {
         echof("デバッグモードを有効にしました。");
         cls();
     }
 
-    configure_console_encoding();
     time(NULL);
     set_up();
     prologue();

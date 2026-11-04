@@ -8,6 +8,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <errno.h>
+#include <wchar.h>
 
 #ifdef _WIN32
     #include <windows.h>
@@ -48,8 +49,37 @@ static FILE* project_fopen(const char* path, const char* mode) {
 
 static void configure_console_encoding(void) {
 #ifdef _WIN32
+    wchar_t executable_path[4096];
+    DWORD path_length;
+    wchar_t* separator;
+
     SetConsoleCP(CP_UTF8);
     SetConsoleOutputCP(CP_UTF8);
+
+    path_length = GetModuleFileNameW(NULL, executable_path,
+                                     sizeof(executable_path) / sizeof(executable_path[0]));
+    if (path_length == 0 || path_length >= sizeof(executable_path) / sizeof(executable_path[0])) {
+        fprintf(stderr, "Unable to determine executable directory.\n");
+        return;
+    }
+    separator = wcsrchr(executable_path, L'\\');
+    if (separator != NULL) {
+        *separator = L'\0';
+        {
+            wchar_t runtime_path[4096];
+            int written = swprintf(runtime_path,
+                                    sizeof(runtime_path) / sizeof(runtime_path[0]),
+                                    L"%ls\\runtime", executable_path);
+            DWORD attributes = written > 0 ? GetFileAttributesW(runtime_path)
+                                           : INVALID_FILE_ATTRIBUTES;
+
+            if (attributes != INVALID_FILE_ATTRIBUTES &&
+                (attributes & FILE_ATTRIBUTE_DIRECTORY) != 0 &&
+                !SetCurrentDirectoryW(executable_path)) {
+                fprintf(stderr, "Unable to set executable directory as current directory.\n");
+            }
+        }
+    }
 #endif
 }
 

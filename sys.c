@@ -82,6 +82,11 @@ static int run_open_jtalk(const char* text, const char* wav_path) {
         fclose(file);
         return 0;
     }
+    if (fputc('\n', file) == EOF) {
+        perror("speech file");
+        fclose(file);
+        return 0;
+    }
     fclose(file);
 
     status = system(command);
