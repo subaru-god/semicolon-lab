@@ -9,10 +9,6 @@
 #include <string.h>
 #include <errno.h>
 
-#if defined(__unix__) || defined(__APPLE__)
-    #include <iconv.h>
-#endif
-
 #ifdef _WIN32
     #include <windows.h>
     #include <io.h>
@@ -31,28 +27,18 @@
 #endif
 
 static FILE* project_fopen(const char* path, const char* mode) {
-#if defined(__unix__) || defined(__APPLE__)
-    iconv_t converter = iconv_open("UTF-8", "CP932");
-    char utf8_path[4096];
-    char* input = (char*)path;
-    char* output = utf8_path;
-    size_t input_left = strlen(path);
-    size_t output_left = sizeof(utf8_path) - 1;
+#ifdef _WIN32
+    wchar_t wide_path[4096];
+    wchar_t wide_mode[32];
 
-    if (converter == (iconv_t)-1) {
-        perror("iconv_open");
+    if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, path, -1,
+                            wide_path, sizeof(wide_path) / sizeof(wide_path[0])) == 0 ||
+        MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, mode, -1,
+                            wide_mode, sizeof(wide_mode) / sizeof(wide_mode[0])) == 0) {
+        fprintf(stderr, "UTF-8 path conversion failed for '%s'.\n", path);
         return NULL;
     }
-    if (iconv(converter, &input, &input_left, &output, &output_left) == (size_t)-1) {
-        int saved_errno = errno;
-        iconv_close(converter);
-        errno = saved_errno;
-        perror("CP932 path conversion");
-        return NULL;
-    }
-    *output = '\0';
-    iconv_close(converter);
-    return fopen(utf8_path, mode);
+    return _wfopen(wide_path, wide_mode);
 #else
     return fopen(path, mode);
 #endif
@@ -62,8 +48,8 @@ static FILE* project_fopen(const char* path, const char* mode) {
 
 static void configure_console_encoding(void) {
 #ifdef _WIN32
-    SetConsoleCP(932);
-    SetConsoleOutputCP(932);
+    SetConsoleCP(CP_UTF8);
+    SetConsoleOutputCP(CP_UTF8);
 #endif
 }
 

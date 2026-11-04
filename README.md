@@ -1,5 +1,8 @@
 # semicolon-lab
 
+ソースコード、文字列リテラル、CSV/テキストデータ、WindowsコンソールはUTF-8を使用します。
+WindowsのVisual Studioでは`/utf-8`を指定してビルドしてください。
+
 ## 音声機能
 
 合成音声はOpenJTalkの`mei_normal`音響モデルでWAVを生成し、miniaudioで再生します。
@@ -19,6 +22,10 @@ runtime/bin/open_jtalk.exe
 runtime/dic/                 # OpenJTalk NAIST辞書
 runtime/voice/mei_normal.htsvoice
 ```
+
+`runtime/bin/open_jtalk.exe`はWindows用の実行ファイルであり、Linux用の
+`runtime/bin/open_jtalk`とは別に用意する必要があります。配置されていない場合、
+音声合成は実行されず、エラーを表示してゲームは継続します。
 
 `miniaudio.h`はリポジトリに同梱しています。`play_bgm()`はループ再生、
 `play_se()`は最大16音まで重ねて再生します。

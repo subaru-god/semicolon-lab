@@ -53,6 +53,12 @@ static int run_open_jtalk(const char* text, const char* wav_path) {
 
 #ifdef _WIN32
     snprintf(text_path, sizeof(text_path), "runtime\\speech.txt");
+    if (access("runtime\\bin\\open_jtalk.exe", 0) != 0) {
+        fprintf(stderr,
+                "OpenJTalk executable was not found: "
+                "runtime\\bin\\open_jtalk.exe\n");
+        return 0;
+    }
     snprintf(command, sizeof(command),
         "\"%s\" -x \"runtime\\dic\" -m \"runtime\\voice\\mei_normal.htsvoice\" "
         "-ow \"%s\" \"%s\"",

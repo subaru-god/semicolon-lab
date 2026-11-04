@@ -2,7 +2,7 @@
     "files.encoding": "shiftjis",
     "files.autoGuessEncoding": false,
     "code-runner.executorMap": {
-        "c": "gcc -finput-charset=cp932 -fexec-charset=UTF-8 -o main main.c && ./main"
+        "c": "gcc -finput-charset=UTF-8 -fexec-charset=UTF-8 -o main main.c && ./main"
     },
     "code-runner.ignoreSelection": true,
     "code-runner.runInTerminal": true,
