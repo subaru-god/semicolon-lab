@@ -151,7 +151,7 @@
   <ItemGroup>
     <ClInclude Include="header.h" />
     <ClInclude Include="miniaudio.h" />
-    <ClInclude Include="audio.c" />
+    <ClCompile Include="sys.c" />
     <ClInclude Include="story.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>

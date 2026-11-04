@@ -24,7 +24,7 @@ int player_rest_hp = 100;
 #include "header.h"
 
 #include "change.c"
-#include "audio.c"
+#include "sys.c"
 #include "story.c"
 #include "battle.c"
 #include "shop.c"
