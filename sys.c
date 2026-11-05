@@ -1,217 +1,134 @@
-#define MINIAUDIO_IMPLEMENTATION
-#include "miniaudio.h"
 #include "header.h"
 
-#define AUDIO_SE_SLOTS 16
-
-static ma_engine audio_engine;
-static ma_sound bgm_sound;
-static ma_sound se_sounds[AUDIO_SE_SLOTS];
-static int se_ready[AUDIO_SE_SLOTS];
-static int audio_ready;
-static int bgm_ready;
-
-static const char* audio_binary(const char* name) {
-    static char path[512];
-#ifdef _WIN32
-    snprintf(path, sizeof(path), "runtime\\bin\\%s.exe", name);
-#else
-    snprintf(path, sizeof(path), "runtime/bin/%s", name);
-#endif
-    return path;
-}
-
-static int audio_start(void) {
-    ma_result result;
-
-    if (audio_ready) {
-        return 1;
-    }
-    result = ma_engine_init(NULL, &audio_engine);
-    if (result != MA_SUCCESS) {
-        fprintf(stderr, "miniaudio initialization failed: %s\n",
-                ma_result_description(result));
-        return 0;
-    }
-    audio_ready = 1;
-    return 1;
-}
-
-static void audio_stop_sound(ma_sound* sound, int* initialized) {
-    if (*initialized) {
-        ma_sound_stop(sound);
-        ma_sound_uninit(sound);
-        *initialized = 0;
-    }
-}
-
-static int run_open_jtalk(const char* text, const char* wav_path) {
-    char text_path[512];
-    char command[2048];
-    FILE* file;
-    int status;
-
-#ifdef _WIN32
-    snprintf(text_path, sizeof(text_path), "runtime\\speech.txt");
-    if (access("runtime\\bin\\open_jtalk.exe", 0) != 0) {
-        fprintf(stderr,
-                "OpenJTalk executable was not found: "
-                "runtime\\bin\\open_jtalk.exe\n");
-        return 0;
-    }
-    snprintf(command, sizeof(command),
-        "\"%s\" -x \"runtime\\dic\" -m \"runtime\\voice\\mei_normal.htsvoice\" "
-        "-ow \"%s\" \"%s\"",
-        audio_binary("open_jtalk"), wav_path, text_path);
-#else
-    snprintf(text_path, sizeof(text_path), "runtime/speech.txt");
-    snprintf(command, sizeof(command),
-        "LD_LIBRARY_PATH=\"runtime/usr/lib/x86_64-linux-gnu\" "
-        "\"%s\" -x \"runtime/dic\" -m \"runtime/voice/mei_normal.htsvoice\" "
-        "-ow \"%s\" \"%s\"",
-        audio_binary("open_jtalk"), wav_path, text_path);
-#endif
-
-    file = fopen(text_path, "wb");
-    if (file == NULL) {
-        perror("speech file");
-        return 0;
-    }
-    if (fputs(text, file) == EOF) {
-        perror("speech file");
-        fclose(file);
-        return 0;
-    }
-    if (fputc('\n', file) == EOF) {
-        perror("speech file");
-        fclose(file);
-        return 0;
-    }
-    fclose(file);
-
-    status = system(command);
-    if (status != 0) {
-        fprintf(stderr, "OpenJTalk failed with status %d.\n", status);
-        return 0;
-    }
-    return 1;
-}
-
-static void speak_text(const char* text) {
-    const char* wav_path;
-    ma_result result;
-
-#ifdef _WIN32
-    wav_path = "runtime\\speech.wav";
-#else
-    wav_path = "runtime/speech.wav";
-#endif
-    if (!run_open_jtalk(text, wav_path) || !audio_start()) {
-        return;
-    }
-    result = ma_engine_play_sound(&audio_engine, wav_path, NULL);
-    if (result != MA_SUCCESS) {
-        fprintf(stderr, "Unable to play speech: %s\n",
-                ma_result_description(result));
-    }
-}
-
+// 合成音声を流す関数 (getchar()がある)
 void echof(const char* format, ...) {
-    char text[1024];
+#ifdef _WIN32
+    char text_buffer[1024];
+    char clean_buffer[1024];
+    char command_buffer[2048];
     va_list args;
+    int i, j = 0;
 
+    // 1. フォーマット文字列の組み立て
     va_start(args, format);
-    vsnprintf(text, sizeof(text), format, args);
+    vsprintf(text_buffer, format, args);
     va_end(args);
 
-    speak_text(text);
-    fputs(text, stdout);
-    fflush(stdout);
+    // 2. PowerShellエラーの原因となる「改行」や「シングルクォート」を除去・整形
+    for (i = 0; text_buffer[i] != '\0'; i++) {
+        if (text_buffer[i] == '\r' || text_buffer[i] == '\n') {
+            continue; // 改行文字は音声コマンドから除外
+        }
+        if (text_buffer[i] == '\'') {
+            clean_buffer[j++] = '\''; // シングルクォートのエスケープ
+        }
+        clean_buffer[j++] = text_buffer[i];
+    }
+    clean_buffer[j] = '\0';
+
+    // 3. 既存のPowerShell音声再生プロセスを終了（音声の上書き）
+    system("taskkill /f /im powershell.exe >nul 2>&1");
+
+    // 4. PowerShellを呼び出して読み上げ（-Command ではなくスクリプトブロック渡しで文字化け・途切りを防止）
+// 話速($s.Rate) と 音量($s.Volume) を設定する例
+    sprintf(command_buffer,
+        "start /b powershell -NoProfile -ExecutionPolicy Bypass -Command "
+        "\"Add-Type -AssemblyName System.Speech; "
+        "$s = New-Object System.Speech.Synthesis.SpeechSynthesizer; "
+        "$s.Rate = 3; "     // 話速: -10 ～ 10 (例: 2 で少し早口)
+        "$s.Volume = 100; "  // 音量: 0 ～ 100
+        "$s.Speak('%s');\" >nul 2>&1",
+        clean_buffer);
+
+    system(command_buffer);
+    Sleep(600);
+    // 画面には元のテキスト（改行あり）を表示
+    printf("%s", text_buffer);
+
+    // エンターキー待機
     getchar();
+#else
+    va_list args;
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
+    getchar();
+#endif
 }
 
+
+/* BGM再生開始 (ファイル名指定) */
 void play_bgm(const char* filename) {
-    ma_result result;
+#ifdef _WIN32
+    char cmd[512];
 
-    if (!audio_start()) {
-        return;
-    }
-    audio_stop_sound(&bgm_sound, &bgm_ready);
-    result = ma_sound_init_from_file(&audio_engine, filename,
-                                     MA_SOUND_FLAG_STREAM, NULL, NULL,
-                                     &bgm_sound);
-    if (result != MA_SUCCESS) {
-        fprintf(stderr, "Unable to load BGM '%s': %s\n",
-                filename, ma_result_description(result));
-        return;
-    }
-    bgm_ready = 1;
-    ma_sound_set_looping(&bgm_sound, MA_TRUE);
-    result = ma_sound_start(&bgm_sound);
-    if (result != MA_SUCCESS) {
-        fprintf(stderr, "Unable to start BGM '%s': %s\n",
-                filename, ma_result_description(result));
-    }
+    /* 既に鳴っているBGMがあれば停止して閉じる */
+    mciSendString("stop my_bgm", NULL, 0, NULL);
+    mciSendString("close my_bgm", NULL, 0, NULL);
+
+    /* BGMファイルを開く (alias: my_bgm として登録) */
+    sprintf(cmd, "open \"%s\" type mpegvideo alias my_bgm", filename);
+    mciSendString(cmd, NULL, 0, NULL);
+
+    /* ループ再生を開始 */
+    mciSendString("play my_bgm repeat", NULL, 0, NULL);
+#else
+    (void)filename;
+#endif
 }
 
-void play_se(const char* filename) {
-    int index;
-    ma_result result;
-
-    if (!audio_start()) {
-        return;
-    }
-    for (index = 0; index < AUDIO_SE_SLOTS; index++) {
-        if (!se_ready[index] || !ma_sound_is_playing(&se_sounds[index])) {
-            if (se_ready[index]) {
-                ma_sound_uninit(&se_sounds[index]);
-            }
-            break;
-        }
-    }
-    if (index == AUDIO_SE_SLOTS) {
-        index = 0;
-        if (se_ready[index]) {
-            ma_sound_stop(&se_sounds[index]);
-            ma_sound_uninit(&se_sounds[index]);
-        }
-    }
-    result = ma_sound_init_from_file(&audio_engine, filename, 0, NULL, NULL,
-                                     &se_sounds[index]);
-    if (result != MA_SUCCESS) {
-        fprintf(stderr, "Unable to load SE '%s': %s\n",
-                filename, ma_result_description(result));
-        return;
-    }
-    se_ready[index] = 1;
-    result = ma_sound_start(&se_sounds[index]);
-    if (result != MA_SUCCESS) {
-        fprintf(stderr, "Unable to start SE '%s': %s\n",
-                filename, ma_result_description(result));
-        ma_sound_uninit(&se_sounds[index]);
-        se_ready[index] = 0;
-    }
-}
-
+/* BGM停止 */
 void stop_bgm(void) {
-    audio_stop_sound(&bgm_sound, &bgm_ready);
+#ifdef _WIN32
+    mciSendString("stop my_bgm", NULL, 0, NULL);
+    mciSendString("close my_bgm", NULL, 0, NULL);
+#endif
 }
 
-void audio_shutdown(void) {
-    int index;
+/* SE再生（BGMとは別のエイリアスで同時再生） */
+void play_se(const char* filename) {
+#ifdef _WIN32
+    enum { SE_CHANNEL_COUNT = 16 };
+    static unsigned int next_channel;
+    char alias[32];
+    char command[512];
+    unsigned int channel = next_channel++ % SE_CHANNEL_COUNT;
 
-    if (!audio_ready) {
-        return;
+    snprintf(alias, sizeof(alias), "my_se_%u", channel);
+
+    /* 再生中のチャンネルは停止して再利用する */
+    snprintf(command, sizeof(command), "stop %s", alias);
+    mciSendString(command, NULL, 0, NULL);
+    snprintf(command, sizeof(command), "close %s", alias);
+    mciSendString(command, NULL, 0, NULL);
+
+    snprintf(command, sizeof(command),
+        "open \"%s\" type mpegvideo alias %s", filename, alias);
+    if (mciSendString(command, NULL, 0, NULL) == 0) {
+        /* repeatを指定しないため、このチャンネルの再生はループしない */
+        snprintf(command, sizeof(command), "play %s", alias);
+        mciSendString(command, NULL, 0, NULL);
     }
+#else
+    (void)filename;
+#endif
+}
+
+/* オーディオ終了処理
+ * 再生中のSEはプログラム終了時に停止して閉じる */
+void audio_shutdown(void) {
+#ifdef _WIN32
+    unsigned int channel;
+    char command[64];
+
     stop_bgm();
-    for (index = 0; index < AUDIO_SE_SLOTS; index++) {
-        if (se_ready[index]) {
-            ma_sound_uninit(&se_sounds[index]);
-            se_ready[index] = 0;
-        }
+    for (channel = 0; channel < 16; channel++) {
+        snprintf(command, sizeof(command), "stop my_se_%u", channel);
+        mciSendString(command, NULL, 0, NULL);
+        snprintf(command, sizeof(command), "close my_se_%u", channel);
+        mciSendString(command, NULL, 0, NULL);
     }
-    ma_engine_uninit(&audio_engine);
-    audio_ready = 0;
+#endif
 }
 
 void cls(void) {
