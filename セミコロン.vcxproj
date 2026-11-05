@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -150,15 +150,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header.h" />
-    <ClInclude Include="miniaudio.h" />
-    <ClCompile Include="sys.c" />
     <ClInclude Include="story.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Media Include="battle.mp3" />
-    <Media Include="set_up.mp3" />
+    <Media Include="battle.mp3"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Media>
+    <Media Include="set_up.mp3"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Media>
   </ItemGroup>
   <ItemGroup>
     <None Include="アイテム.csv" />
