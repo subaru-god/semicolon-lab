@@ -1,6 +1,6 @@
 #include "header.h"
 
-/* heder.h で宣言されているのでコメントアウトして動作確認
+/* heder.h �Ő錾����Ă���̂ŃR�����g�A�E�g���ē���m�F
 extern char name[];
 extern char call_name[];
 extern char user_select;
@@ -32,37 +32,37 @@ extern void start_map_mode(const char* filename, int spawn_id, int has_enemy, ..
 void set_up(void) {
     cls();
     play_bgm("set_up.mp3");
-    echof("【Re:魔王討伐は簡単だった ～そんなことはない！～ 】へ ようこそ！（進むにはEnterキーを押してください）");
-    echof("\nまずは名前を決めます。");
+    echof("�yRe:���������͊ȒP������ �`����Ȃ��Ƃ͂Ȃ��I�` �z�� �悤�����I�i�i�ނɂ�Enter�L�[�������Ă��������j");
+    echof("\n�܂��͖��O�����߂܂��B");
 
     do {
-        printf("名前を入力してください：");
+        printf("���O����͂��Ă��������F");
         scanf(" %1000s", name);
         while (getchar() != '\n');
-        printf("%sでよろしいですね？y/n：", name);
+        printf("%s�ł�낵���ł��ˁHy/n�F", name);
         scanf(" %c", &user_select);
         while (getchar() != '\n');
     } while (user_select != 'y');
 
-    echof("\n\n次に呼ばれ方を決めます。\n");
+    echof("\n\n���ɌĂ΂�������߂܂��B\n");
     do {
-        printf("何て呼べばいいですか：");
+        printf("���ČĂׂ΂����ł����F");
         scanf(" %s", call_name);
         while (getchar() != '\n');
-        printf("%sでよろしいですね？y/n：", call_name);
+        printf("%s�ł�낵���ł��ˁHy/n�F", call_name);
         scanf(" %c", &user_select);
         while (getchar() != '\n');
     } while (user_select != 'y');
 
-    echof("\n\n最後に難易度を決めます\n");
+    echof("\n\n�Ō�ɓ�Փx�����߂܂�\n");
     do {
         do {
-            printf("難易度を1～3で選択してください（1がEasy,3がHardモードです）：");
+            printf("��Փx��1�`3�őI�����Ă��������i1��Easy,3��Hard���[�h�ł��j�F");
             scanf(" %1d", &level_of_story);
             while (getchar() != '\n');
         } while (level_of_story < 1 || level_of_story > 3);
 
-        printf("%dでよろしいですね？y/n：", level_of_story);
+        printf("%d�ł�낵���ł��ˁHy/n�F", level_of_story);
         scanf(" %c", &user_select);
         while (getchar() != '\n');
     } while (user_select != 'y');
@@ -71,14 +71,14 @@ void set_up(void) {
 void prologue(void) {
     cls();
     do {
-        echof("...%s ..%s..! 起きて%s!!!!\n", name, name, name);
-        printf("起きますか？y/n：");
+        echof("...%s ..%s..! �N����%s!!!!\n", name, name, name);
+        printf("�N���܂����Hy/n�F");
         scanf(" %c", &user_select);
         while (getchar() != '\n');
     } while (user_select != 'y');
 
-    echof("明日はあなたが魔王討伐に向けて旅立つ日でしょう。お母さん心配なの。");
-    echof("だからあなたの腕試しをしておきたいの。");
+    echof("�����͂��Ȃ������������Ɍ����ė������ł��傤�B���ꂳ��S�z�Ȃ́B");
+    echof("�����炠�Ȃ��̘r���������Ă��������́B");
     ap = 20;
     sum_ap = ap;
     can_item[1] = 1;
@@ -89,14 +89,14 @@ void prologue(void) {
     play_bgm("set_up.mp3");
 
     if (result == 1) {
-        echof("お母さんももう衰えたわね。これで安心して送り出せるわ。明日は早いからもう寝なさい。");
+        echof("���ꂳ���������������ˁB����ň��S���đ���o�����B�����͑�����������Q�Ȃ����B");
     }
     else {
-        echof("私も勇者と結婚したほど強いってものよ。あなたもすぐ強くなれるわ。寝る子は育つ！明日は早いからもう寝なさい。");
+        echof("�����E�҂ƌ��������قǋ������Ă��̂�B���Ȃ������������Ȃ���B�Q��q�͈�I�����͑�����������Q�Ȃ����B");
     }
 
     do {
-        printf("寝ますか？y/n：");
+        printf("�Q�܂����Hy/n�F");
         scanf(" %c", &user_select);
         while (getchar() != '\n');
     } while (user_select != 'y');
@@ -104,33 +104,37 @@ void prologue(void) {
 
 int story_1(void) {
     cls();
-    echof("おはよう！%s", call_name);
-    echof("ついに旅立つ日が来たわね。これはこの村の人全員からの気持ちよ。");
-    echof("\n300Gを受け取りました");
+    echof("���͂悤�I%s", call_name);
+    echof("���ɗ�������������ˁB����͂��̑��̐l�S������̋C������B");
+    play_se("get_item.mp3");
+    echof("\n300G���󂯎��܂���");
     money += 300;
-    echof("G(ゴールド)はお金です。世界中のあらゆる場所で使えます。");
-    echof("\n木の棒を受け取りました。");
+    echof("G(�S�[���h)�͂����ł��B���E���̂�����ꏊ�Ŏg���܂��B");
+    play_se("get_item.mp3");
+    echof("\n�؂̖_���󂯎��܂����B");
     can_weapon[1] = 1;
-    echof("木の棒は装備品です。装備してみましょう");
+    echof("�؂̖_�͑����i�ł��B�������Ă݂܂��傤");
     change();
-    echof("お母さんのお守りを受け取りました");
-    echof("\nただのお守りだけどきっとあなたを守ってくれるはずよ。");
-    echof("\n肌身離さず持っていなさい。");
-    echof("\n\nアイスの魔導書を受け取りました。");
+    echof("���ꂳ��̂������󂯎��܂���");
+    play_se("get_item.mp3");
+    echof("\n�����̂���肾���ǂ����Ƃ��Ȃ�������Ă����͂���B");
+    echof("\n���g�����������Ă��Ȃ����B");
+    play_se("get_item.mp3");
+    echof("\n\n�A�C�X�̖��������󂯎��܂����B");
     can_magics[1] = 1;
-    echof("2.魔法 ＞1.アイス を選択して使えます。早速使ってみましょう");
+    echof("2.���@ ��1.�A�C�X ��I�����Ďg���܂��B�����g���Ă݂܂��傤");
     play_bgm("battle.mp3");
     battle(20);
-    echof("使い方がわかったので町へ出てみてみましょう");
+    echof("�g�������킩�����̂Œ��֏o�Ă݂Ă݂܂��傤");
     can_item[1] = 1;
-    start_map_mode("サイショームラ.txt", 0, 0);
+    start_map_mode("�T�C�V���[����.txt", 0, 0);
     return 0;
 }
 
 int debug(void) {
     int i, j;
-    echof("ここからは開発者モードです。");
-    echof("\nデバッグモードが不要な場合はゲーム実行時に引数を与えないでください。");
+    echof("��������͊J���҃��[�h�ł��B");
+    echof("\n�f�o�b�O���[�h���s�v�ȏꍇ�̓Q�[�����s���Ɉ�����^���Ȃ��ł��������B");
     money = 10000000;
     item_shop(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, -1);
     weapon_shop(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, -1);
@@ -142,9 +146,9 @@ int debug(void) {
     for (i = 1; i < 40; i++) can_magics[i] = 1;
     for (i = 1; i < 16; i++) can_item[i] = 20;
 
-    echof("開発者モードにつき全ての武器、魔法、アイテムを所持しました。");
+    echof("�J���҃��[�h�ɂ��S�Ă̕���A���@�A�A�C�e�����������܂����B");
     for (;;) {
-        printf("敵IDを入力してください、終了するには0を入力してください。：");
+        printf("�GID����͂��Ă��������A�I������ɂ�0����͂��Ă��������B�F");
         scanf("%d", &i);
         if (i == 0) break;
         play_bgm("battle.mp3");
@@ -152,15 +156,15 @@ int debug(void) {
         battle(i);
     }
 
-    echof("マップのデバッグを行います。\n\n");
+    echof("�}�b�v�̃f�o�b�O���s���܂��B\n\n");
     while (1) {
-        printf("マップファイル名を入力してください、終了するにはexitを入力してください。：");
+        printf("�}�b�v�t�@�C��������͂��Ă��������A�I������ɂ�exit����͂��Ă��������B�F");
         scanf(" %255s", cache_str);
         if (cache_str[0] == '\0') continue;
         if (strcmp(cache_str, "exit") == 0) break;
 
         while (1) {
-            printf("敵の有無を選択してください（0:敵なし、1:敵あり）：");
+            printf("�G�̗L����I�����Ă��������i0:�G�Ȃ��A1:�G����j�F");
             scanf("%d", &cache);
             while (getchar() != '\n');
             if (cache == 0 || cache == 1) break;
@@ -170,17 +174,17 @@ int debug(void) {
             i = 0;
             memset(cache3, 0, sizeof(cache3));
             while (1) {
-                printf("現在登録中のID：");
+                printf("���ݓo�^����ID�F");
                 for (j = 0; j < i; j++) printf("%d ", cache3[j]);
                 printf("\n");
 
-                printf("敵IDを入力してください（終了するには-1を入力）：");
+                printf("�GID����͂��Ă��������i�I������ɂ�-1����́j�F");
                 if (scanf(" %d", &cache3[i]) != 1) { while (getchar() != '\n'); continue; }
                 while (getchar() != '\n');
 
                 if (cache3[i] == -1) break;
                 if (i < 64) i++;
-                else { printf("これ以上登録できません。\n"); break; }
+                else { printf("����ȏ�o�^�ł��܂���B\n"); break; }
             }
             start_map_mode(cache_str, 0, 1, cache3[0], cache3[1], cache3[2], cache3[3], cache3[4], cache3[5], cache3[6], cache3[7], cache3[8], cache3[9], -1);
         }

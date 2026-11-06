@@ -1,6 +1,6 @@
 #include "header.h"
 
-/* heder.h ã§å®£è¨€ã•ã‚Œã¦ã„ã‚‹ã®ã§ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã—ã¦å‹•ä½œç¢ºèª
+/* heder.h ‚ÅéŒ¾‚³‚ê‚Ä‚¢‚é‚Ì‚ÅƒRƒƒ“ƒgƒAƒEƒg‚µ‚Ä“®ìŠm”F
 extern int can_weapon[];
 extern int level_of_story;
 extern int sum_ap;
@@ -20,9 +20,9 @@ typedef struct {
     char remark[128];
 } WeaponData;
 
-/* å¼•æ•°: weapon_id = CSVã®æ­¦å™¨IDã€out_weapon = èª­ã¿è¾¼ã¿å…ˆ */
+/* ˆø”: weapon_id = CSV‚Ì•ŠíIDAout_weapon = “Ç‚İ‚İæ */
 static int load_weapon_info(int weapon_id, WeaponData* out_weapon) {
-    FILE* fp = fopen("æ­¦å™¨.csv", "r");
+    FILE* fp = fopen("•Ší.csv", "r");
     char line[256];
     char* token;
 
@@ -64,20 +64,20 @@ void change(void) {
     }
     cls();
     if (count == 0) {
-        echof("\nå¤‰æ›´ã§ãã‚‹è£…å‚™ã‚’æŒã£ã¦ã„ã¾ã›ã‚“ï¼\n");
+        echof("\n•ÏX‚Å‚«‚é‘•”õ‚ğ‚Á‚Ä‚¢‚Ü‚¹‚ñI\n");
         cls();
         return;
     }
 
-    printf("\n--- è£…å‚™é¸æŠ ---\n");
+    printf("\n--- ‘•”õ‘I‘ğ ---\n");
     for (i = 0; i < count; i++) {
         int pwr = available_weapons[i].power_normal;
         if (level_of_story == 1) pwr = available_weapons[i].power_easy;
         else if (level_of_story == 3) pwr = available_weapons[i].power_hard;
 
-        printf("%d. %s (å¨åŠ›: %d)\n", i + 1, available_weapons[i].name, pwr);
+        printf("%d. %s (ˆĞ—Í: %d)\n", i + 1, available_weapons[i].name, pwr);
     }
-    printf("0. æˆ»ã‚‹\nè£…å‚™ã‚’é¸æŠã—ã¦ãã ã•ã„ > ");
+    printf("0. –ß‚é\n‘•”õ‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢ > ");
 
     if (scanf("%d", &choice) != 1) {
         while (getchar() != '\n');
@@ -100,6 +100,6 @@ void change(void) {
     else selected_power = available_weapons[choice].power_normal;
 
     sum_ap = selected_power + ap;
-    echof("\n%s ã‚’è£…å‚™ã—ã¾ã—ãŸï¼ï¼ˆæ”»æ’ƒåŠ›: %dï¼‰\n", available_weapons[choice].name, sum_ap);
+    echof("\n%s ‚ğ‘•”õ‚µ‚Ü‚µ‚½IiUŒ‚—Í: %dj\n", available_weapons[choice].name, sum_ap);
     cls();
 }

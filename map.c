@@ -27,7 +27,7 @@ typedef struct {
     int mp_heal;
 } MapItemData;
 
-/* heder.h ã§å®£è¨€ã•ã‚Œã¦ã„ã‚‹ã®ã§ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã—ã¦å‹•ä½œç¢ºèª
+/* heder.h ‚ÅéŒ¾‚³‚ê‚Ä‚¢‚é‚Ì‚ÅƒRƒƒ“ƒgƒAƒEƒg‚µ‚Ä“®ìŠm”F
 extern void echof(const char* format, ...);
 extern int battle(int e_id);
 extern int item_shop(int first_id, ...);
@@ -36,7 +36,7 @@ extern int all_shop(int first_id, ...);
 extern int can_item[];
 */
 
-/* å¼•æ•°: x = ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã®æ¨ªä½ç½®ã€y = ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã®ç¸¦ä½ç½® */
+/* ˆø”: x = ƒRƒ“ƒ\[ƒ‹‚Ì‰¡ˆÊ’uAy = ƒRƒ“ƒ\[ƒ‹‚ÌcˆÊ’u */
 static void set_cursor_pos(int x, int y) {
 #ifdef _WIN32
     COORD coord;
@@ -78,7 +78,7 @@ static int is_event_symbol(char ch) {
     return ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'));
 }
 
-/* å¼•æ•°: map = ç¢ºä¿å¯¾è±¡ã®ãƒãƒƒãƒ—ã€width/height = ãƒãƒƒãƒ—ã®å¹…ã¨é«˜ã• */
+/* ˆø”: map = Šm•Û‘ÎÛ‚Ìƒ}ƒbƒvAwidth/height = ƒ}ƒbƒv‚Ì•‚Æ‚‚³ */
 static int allocate_map(Map* map, int width, int height) {
     int y, i;
     map->width = width;
@@ -116,9 +116,9 @@ static void free_map(Map* map) {
     }
 }
 
-/* å¼•æ•°: item_id = CSVã®ã‚¢ã‚¤ãƒ†ãƒ IDã€out_item = èª­ã¿è¾¼ã¿å…ˆ */
+/* ˆø”: item_id = CSV‚ÌƒAƒCƒeƒ€IDAout_item = “Ç‚İ‚İæ */
 static int load_map_item_info(int item_id, MapItemData* out_item) {
-    FILE* fp = fopen("ã‚¢ã‚¤ãƒ†ãƒ .csv", "r");
+    FILE* fp = fopen("ƒAƒCƒeƒ€.csv", "r");
     char line[256], * token;
     if (fp == NULL) return 0;
     fgets(line, sizeof(line), fp);
@@ -157,23 +157,23 @@ static void use_map_item(void) {
     }
 
     if (count == 0) {
-        echof("\nç§»å‹•ä¸­ã«ä½¿ãˆã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã‚’æŒã£ã¦ã„ã¾ã›ã‚“ï¼\n");
+        echof("\nˆÚ“®’†‚Ég‚¦‚éƒAƒCƒeƒ€‚ğ‚Á‚Ä‚¢‚Ü‚¹‚ñI\n");
         cls();
         return;
     }
 
-    printf("\n--- ç§»å‹•ç”¨ã‚¢ã‚¤ãƒ†ãƒ ä¸€è¦§ ---\n");
+    printf("\n--- ˆÚ“®—pƒAƒCƒeƒ€ˆê—— ---\n");
     for (i = 0; i < count; i++) {
-        printf("%d. %s (æ‰€æŒæ•°:%d) [å›å¾© HP:%d / MP:%d]\n", i + 1, items[i].name, can_item[items[i].id], items[i].hp_heal, items[i].mp_heal);
+        printf("%d. %s (Š”:%d) [‰ñ•œ HP:%d / MP:%d]\n", i + 1, items[i].name, can_item[items[i].id], items[i].hp_heal, items[i].mp_heal);
     }
-    printf("0. æˆ»ã‚‹\nä½¿ç”¨ã™ã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã‚’é¸æŠã—ã¦ãã ã•ã„ > ");
+    printf("0. –ß‚é\ng—p‚·‚éƒAƒCƒeƒ€‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢ > ");
 
     if (scanf("%d", &choice) != 1) { while (getchar() != '\n'); cls(); return; }
     while (getchar() != '\n');
     if (choice <= 0 || choice > count) { cls(); return; }
 
     choice--;
-    echof("\n%s ã‚’ä½¿ç”¨ã—ãŸï¼ (HP:%d / MP:%d å›å¾©)\n", items[choice].name, items[choice].hp_heal, items[choice].mp_heal);
+    echof("\n%s ‚ğg—p‚µ‚½I (HP:%d / MP:%d ‰ñ•œ)\n", items[choice].name, items[choice].hp_heal, items[choice].mp_heal);
     can_item[items[choice].id]--;
     cls();
 }
@@ -199,18 +199,18 @@ void display_map(const Map* map) {
     printf("=============================================\n");
 
     if (map->event_desc_count > 0) {
-        printf("--- ã‚¤ãƒ™ãƒ³ãƒˆä¸€è¦§ ---\n");
+        printf("--- ƒCƒxƒ“ƒgˆê—— ---\n");
         for (i = 0; i < map->event_desc_count; i++) printf("%s\n", map->event_descs[i]);
         printf("--------------------\n");
     }
-    printf("[W]:ä¸Š  [S]:ä¸‹  [A]:å·¦  [D]:å³  [Q]:ã‚¢ã‚¤ãƒ†ãƒ ã‚’ä½¿ã†\n");
+    printf("[W]:ã  [S]:‰º  [A]:¶  [D]:‰E  [Q]:ƒAƒCƒeƒ€‚ğg‚¤\n");
 }
 
-/* å¼•æ•°: map = å‡ºåŠ›å…ˆãƒãƒƒãƒ—ã€event_symbols/event_count = ã‚¤ãƒ™ãƒ³ãƒˆå®šç¾©ã€event_descs = èª¬æ˜æ–‡ */
+/* ˆø”: map = o—Íæƒ}ƒbƒvAevent_symbols/event_count = ƒCƒxƒ“ƒg’è‹`Aevent_descs = à–¾•¶ */
 static void generate_random_map(Map* map, const char event_symbols[], int event_count, const char* event_descs[]) {
     int x, y, i, width = 20, height = 10, rx, ry;
     allocate_map(map, width, height);
-    strcpy(map->current_map_name, "ãƒ©ãƒ³ãƒ€ãƒ ãƒãƒƒãƒ—");
+    strcpy(map->current_map_name, "ƒ‰ƒ“ƒ_ƒ€ƒ}ƒbƒv");
     map->event_desc_count = 0;
 
     for (y = 0; y < height; y++) {
@@ -245,13 +245,13 @@ static void generate_random_map(Map* map, const char event_symbols[], int event_
     }
 }
 
-/* å¼•æ•°: map = å‡ºåŠ›å…ˆãƒãƒƒãƒ—ã€filename = ãƒãƒƒãƒ—ãƒ•ã‚¡ã‚¤ãƒ«ã€spawn_id = é–‹å§‹ä½ç½® */
+/* ˆø”: map = o—Íæƒ}ƒbƒvAfilename = ƒ}ƒbƒvƒtƒ@ƒCƒ‹Aspawn_id = ŠJnˆÊ’u */
 int load_map_from_file(Map* map, const char* filename, int spawn_id) {
     FILE* fp = fopen(filename, "r");
     char line[512], spawn_char = (char)('0' + spawn_id);
     int max_w = 0, h = 0, len, x, y = 0, is_map_part = 1;
 
-    if (fp == NULL) { printf("ã‚¨ãƒ©ãƒ¼: ãƒãƒƒãƒ—ãƒ•ã‚¡ã‚¤ãƒ« '%s' ãŒé–‹ã‘ã¾ã›ã‚“ã§ã—ãŸã€‚\n", filename); return 0; }
+    if (fp == NULL) { printf("ƒGƒ‰[: ƒ}ƒbƒvƒtƒ@ƒCƒ‹ '%s' ‚ªŠJ‚¯‚Ü‚¹‚ñ‚Å‚µ‚½B\n", filename); return 0; }
     map->event_desc_count = 0;
 
     while (fgets(line, sizeof(line), fp) != NULL) {
@@ -306,59 +306,59 @@ int load_map_from_file(Map* map, const char* filename, int spawn_id) {
     return 1;
 }
 
-/* å¼•æ•°: symbol = ã‚¤ãƒ™ãƒ³ãƒˆè¨˜å·ã€map_name = ç¾åœ¨ã®ãƒãƒƒãƒ—ãƒ•ã‚¡ã‚¤ãƒ«å */
+/* ˆø”: symbol = ƒCƒxƒ“ƒg‹L†Amap_name = Œ»İ‚Ìƒ}ƒbƒvƒtƒ@ƒCƒ‹–¼ */
 static int handle_event_point(char symbol, const char* map_name) {
     char user_select;
     cls();
     switch (symbol) {
         case 'B':
-            echof("ãŠæ¯ã•ã‚“ã¨å‡ºä¼šã£ãŸï¼\n");
+            echof("‚¨•ê‚³‚ñ‚Æo‰ï‚Á‚½I\n");
                 do {
-                    printf("ãƒãƒˆãƒ«ã®ç·´ç¿’ã‚’ã—ã¦ãŠãï¼Ÿ y/nï¼š");
+                    printf("ƒoƒgƒ‹‚Ì—ûK‚ğ‚µ‚Ä‚¨‚­H y/nF");
                    user_select = (char)getchar();
                    while (getchar() != '\n');
                 } while (user_select != 'y' && user_select != 'n');
 
             if (user_select == 'y') battle(20);
-                else echof("ãã†â€¦");
-            echof("é ‘å¼µã£ã¦ã‚‰ã£ã—ã‚ƒã„");
+                else echof("‚»‚¤c");
+            echof("Šæ’£‚Á‚Ä‚ç‚Á‚µ‚á‚¢");
             break;
 
         case 'I':
-            echof("ã‚¢ã‚¤ãƒ†ãƒ ã‚·ãƒ§ãƒƒãƒ—ã¸å…¥ã£ãŸï¼\n");
-            if (strcmp(map_name, "ã‚µã‚¤ã‚·ãƒ§ãƒ¼ãƒ ãƒ©_1.txt") == 0) item_shop(1, 2, 3, -1);
+            echof("ƒAƒCƒeƒ€ƒVƒ‡ƒbƒv‚Ö“ü‚Á‚½I\n");
+            if (strcmp(map_name, "ƒTƒCƒVƒ‡[ƒ€ƒ‰_1.txt") == 0) item_shop(1, 2, 3, -1);
             break;
 
         case 'O':
-            if (strcmp(map_name, "ã‚µã‚¤ã‚·ãƒ§ãƒ¼ãƒ ãƒ©_1.txt") == 0) {
-                echof("ç”ºã®å¤–ã¸å‡ºãŸï¼\n");
+            if (strcmp(map_name, "ƒTƒCƒVƒ‡[ƒ€ƒ‰_1.txt") == 0) {
+                echof("’¬‚ÌŠO‚Öo‚½I\n");
                 start_map_mode("random", 0, 1, 20, 21, 22, -1);
                 return 0;
             }
 
         case 'Q':
-            echof("ç”ºã‚’å‡ºãŸ\n");
+            echof("’¬‚ğo‚½\n");
             return 0;
 
         case 'Y':
-            echof("ã‚ˆã‚ãšå±‹ã¸å…¥ã£ãŸï¼\n");
-            if (strcmp(map_name, "ã‚µã‚¤ã‚·ãƒ§ãƒ¼ãƒ ãƒ©_1.txt") == 0) all_shop(1, 2, 3, -1, 1, 2, 3, -1);
+            echof("‚æ‚ë‚¸‰®‚Ö“ü‚Á‚½I\n");
+            if (strcmp(map_name, "ƒTƒCƒVƒ‡[ƒ€ƒ‰_1.txt") == 0) all_shop(1, 2, 3, -1, 1, 2, 3, -1);
             break;
 
         case 'W':
-            echof("æ­¦å™¨å±‹ã¸å…¥ã£ãŸï¼\n");
-            if (strcmp(map_name, "ã‚µã‚¤ã‚·ãƒ§ãƒ¼ãƒ ãƒ©_1.txt") == 0) weapon_shop(1, 2, 3, -1);
+            echof("•Ší‰®‚Ö“ü‚Á‚½I\n");
+            if (strcmp(map_name, "ƒTƒCƒVƒ‡[ƒ€ƒ‰_1.txt") == 0) weapon_shop(1, 2, 3, -1);
             break;
 
         default:
-            echof("ã€%cã€‘ä½•ã‚‚èµ·ã“ã‚‰ãªã‹ã£ãŸ...\n", symbol);
+            echof("y%cz‰½‚à‹N‚±‚ç‚È‚©‚Á‚½...\n", symbol);
             break;
     }
     cls();
     return 1;
 }
 
-/* å¼•æ•°: map = ç¾åœ¨ã®ãƒãƒƒãƒ—ã€key = å…¥åŠ›ã‚­ãƒ¼ã€has_enemy = æ•µã®æœ‰ç„¡ã€enemy_ids/enemy_count = æ•µä¸€è¦§ */
+/* ˆø”: map = Œ»İ‚Ìƒ}ƒbƒvAkey = “ü—ÍƒL[Ahas_enemy = “G‚Ì—L–³Aenemy_ids/enemy_count = “Gˆê—— */
 int move_player(Map* map, char key, int has_enemy, const int enemy_ids[], int enemy_count) {
     int next_x = map->player_x, next_y = map->player_y;
 
@@ -383,14 +383,14 @@ int move_player(Map* map, char key, int has_enemy, const int enemy_ids[], int en
 
     if (has_enemy && enemy_count > 0 && rand() % 100 < 5) {
         cls();
-        echof("ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ãŒç¾ã‚ŒãŸï¼\n");
+        echof("ƒ‚ƒ“ƒXƒ^[‚ªŒ»‚ê‚½I\n");
         battle(enemy_ids[rand() % enemy_count]);
         cls();
     }
     return 1;
 }
 
-/* å¼•æ•°: ãƒ•ã‚¡ã‚¤ãƒ«åã€å‡ºç¾ä½ç½®IDã€æ•µã®æœ‰ç„¡ã€æ•µIDã®é †ã«æŒ‡å®šã—ã€æ•µIDã¯-1ã§çµ‚äº† */
+/* ˆø”: ƒtƒ@ƒCƒ‹–¼AoŒ»ˆÊ’uIDA“G‚Ì—L–³A“GID‚Ì‡‚Éw’è‚µA“GID‚Í-1‚ÅI—¹ */
 void start_map_mode(const char* filename, int spawn_id, int has_enemy, ...) {
     Map map;
     char key, event_symbols[32];

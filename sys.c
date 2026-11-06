@@ -32,18 +32,18 @@ void echof(const char* format, ...) {
     // 4. PowerShellを呼び出して読み上げ（-Command ではなくスクリプトブロック渡しで文字化け・途切りを防止）
 // 話速($s.Rate) と 音量($s.Volume) を設定する例
     sprintf(command_buffer,
-        "start /b powershell -NoProfile -ExecutionPolicy Bypass -Command "
+        "start \"\" /b powershell -NoProfile -ExecutionPolicy Bypass -Command "
         "\"Add-Type -AssemblyName System.Speech; "
         "$s = New-Object System.Speech.Synthesis.SpeechSynthesizer; "
         "$s.Rate = 3; "     // 話速: -10 ～ 10 (例: 2 で少し早口)
-        "$s.Volume = 100; "  // 音量: 0 ～ 100
+        "$s.Volume = 200; "  // 音量: 0 ～ 100
         "$s.Speak('%s');\" >nul 2>&1",
         clean_buffer);
 
     system(command_buffer);
-    Sleep(600);
     // 画面には元のテキスト（改行あり）を表示
     printf("%s", text_buffer);
+	Sleep(3000); // 音声が途切れないように少し待機
 
     // エンターキー待機
     getchar();
@@ -76,58 +76,161 @@ void play_bgm(const char* filename) {
     (void)filename;
 #endif
 }
+#define SE_CHANNEL_COUNT 16
+
+static int se_open[SE_CHANNEL_COUNT] = { 0 };
+static int se_next_channel = 0;
+
+static int is_wav_file(const char* filename) {
+    const char* extension = strrchr(filename, '.');
+
+    if (extension == NULL) {
+        return 0;
+    }
+
+#if defined(__BORLANDC__)
+    return stricmp(extension, ".wav") == 0;
+#elif defined(_MSC_VER)
+    return _stricmp(extension, ".wav") == 0;
+#else
+    return strcmp(extension, ".wav") == 0;
+#endif
+}
+
+/* SEを一度だけ再生する */
+void play_se(const char* filename) {
+#ifdef _WIN32
+    char alias[32];
+    char command[1024];
+    char status[32];
+    int channel;
+    int i;
+
+    if (filename == NULL || filename[0] == '\0') {
+        return;
+    }
+
+    /*
+     * 使用可能なチャンネルを探す。
+     * 再生終了済みのSEは、次回再生時に自動的にクローズする。
+     */
+    channel = -1;
+
+    for (i = 0; i < SE_CHANNEL_COUNT; i++) {
+        int candidate = (se_next_channel + i) % SE_CHANNEL_COUNT;
+
+        sprintf(alias, "se_%d", candidate);
+
+        if (!se_open[candidate]) {
+            channel = candidate;
+            break;
+        }
+
+        memset(status, 0, sizeof(status));
+
+        sprintf(command, "status %s mode", alias);
+
+        if (mciSendStringA(
+            command,
+            status,
+            sizeof(status),
+            NULL) != 0 ||
+            strcmp(status, "playing") != 0) {
+            if (mciSendStringA(
+                command,
+                status,
+                sizeof(status),
+                NULL) != 0 ||
+                strcmp(status, "playing") != 0) {
+                sprintf(command, "close %s", alias);
+                mciSendStringA(command, NULL, 0, NULL);
+
+                se_open[candidate] = 0;
+                channel = candidate;
+                break;
+            }
+            sprintf(command, "close %s", alias);
+            mciSendStringA(command, NULL, 0, NULL);
+
+            se_open[candidate] = 0;
+            channel = candidate;
+            break;
+        }
+    }
+
+    /*
+     * すべてのチャンネルが再生中の場合は、新しいSEを再生しない。
+     * SE_CHANNEL_COUNTを増やすと同時再生数を増やせる。
+     */
+    if (channel < 0) {
+        return;
+    }
+
+    se_next_channel = (channel + 1) % SE_CHANNEL_COUNT;
+
+    sprintf(alias, "se_%d", channel);
+
+    if (is_wav_file(filename)) {
+        sprintf(
+            command,
+            "open \"%s\" type waveaudio alias %s",
+            filename,
+            alias);
+    }
+    else {
+        sprintf(
+            command,
+            "open \"%s\" type mpegvideo alias %s",
+            filename,
+            alias);
+    }
+
+    if (mciSendStringA(command, NULL, 0, NULL) != 0) {
+        se_open[channel] = 0;
+        return;
+    }
+
+    sprintf(command, "play %s", alias);
+
+    if (mciSendStringA(command, NULL, 0, NULL) != 0) {
+        sprintf(command, "close %s", alias);
+        mciSendStringA(command, NULL, 0, NULL);
+        se_open[channel] = 0;
+        return;
+    }
+
+    se_open[channel] = 1;
+#else
+    (void)filename;
+#endif
+}
+
+/* 再生中のSEをすべて停止する */
+void stop_se_all(void) {
+#ifdef _WIN32
+    char alias[32];
+    char command[64];
+    int i;
+
+    for (i = 0; i < SE_CHANNEL_COUNT; i++) {
+        sprintf(alias, "se_%d", i);
+
+        sprintf(command, "stop %s", alias);
+        mciSendStringA(command, NULL, 0, NULL);
+
+        sprintf(command, "close %s", alias);
+        mciSendStringA(command, NULL, 0, NULL);
+
+        se_open[i] = 0;
+    }
+#endif
+}
 
 /* BGM停止 */
 void stop_bgm(void) {
 #ifdef _WIN32
     mciSendString("stop my_bgm", NULL, 0, NULL);
     mciSendString("close my_bgm", NULL, 0, NULL);
-#endif
-}
-
-/* SE再生（BGMとは別のエイリアスで同時再生） */
-void play_se(const char* filename) {
-#ifdef _WIN32
-    enum { SE_CHANNEL_COUNT = 16 };
-    static unsigned int next_channel;
-    char alias[32];
-    char command[512];
-    unsigned int channel = next_channel++ % SE_CHANNEL_COUNT;
-
-    snprintf(alias, sizeof(alias), "my_se_%u", channel);
-
-    /* 再生中のチャンネルは停止して再利用する */
-    snprintf(command, sizeof(command), "stop %s", alias);
-    mciSendString(command, NULL, 0, NULL);
-    snprintf(command, sizeof(command), "close %s", alias);
-    mciSendString(command, NULL, 0, NULL);
-
-    snprintf(command, sizeof(command),
-        "open \"%s\" type mpegvideo alias %s", filename, alias);
-    if (mciSendString(command, NULL, 0, NULL) == 0) {
-        /* repeatを指定しないため、このチャンネルの再生はループしない */
-        snprintf(command, sizeof(command), "play %s", alias);
-        mciSendString(command, NULL, 0, NULL);
-    }
-#else
-    (void)filename;
-#endif
-}
-
-/* オーディオ終了処理
- * 再生中のSEはプログラム終了時に停止して閉じる */
-void audio_shutdown(void) {
-#ifdef _WIN32
-    unsigned int channel;
-    char command[64];
-
-    stop_bgm();
-    for (channel = 0; channel < 16; channel++) {
-        snprintf(command, sizeof(command), "stop my_se_%u", channel);
-        mciSendString(command, NULL, 0, NULL);
-        snprintf(command, sizeof(command), "close my_se_%u", channel);
-        mciSendString(command, NULL, 0, NULL);
-    }
 #endif
 }
 

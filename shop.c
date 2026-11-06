@@ -10,7 +10,7 @@ typedef struct {
     char name[64];
 } ShopWeaponData;
 
-/* heder.h ã§å®£è¨€ã•ã‚Œã¦ã„ã‚‹ã®ã§ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã—ã¦å‹•ä½œç¢ºèª 
+/* heder.h ‚ÅéŒ¾‚³‚ê‚Ä‚¢‚é‚Ì‚ÅƒRƒƒ“ƒgƒAƒEƒg‚µ‚Ä“®ìŠm”F 
 extern int money;
 extern int can_item[];
 extern int can_weapon[];
@@ -18,9 +18,9 @@ extern int level_of_story;
 extern void echof(const char* format, ...);
 */
 
-/* å¼•æ•°: item_id = CSVã®ã‚¢ã‚¤ãƒ†ãƒ IDã€out_item = èª­ã¿è¾¼ã¿å…ˆ */
+/* ˆø”: item_id = CSV‚ÌƒAƒCƒeƒ€IDAout_item = “Ç‚İ‚İæ */
 static int load_shop_item_info(int item_id, ShopItemData* out_item) {
-    FILE* fp = fopen("ã‚¢ã‚¤ãƒ†ãƒ .csv", "r");
+    FILE* fp = fopen("ƒAƒCƒeƒ€.csv", "r");
     char line[256], * token;
     if (fp == NULL) return 0;
     if (fgets(line, sizeof(line), fp) == NULL) { fclose(fp); return 0; }
@@ -44,9 +44,9 @@ static int load_shop_item_info(int item_id, ShopItemData* out_item) {
     return 0;
 }
 
-/* å¼•æ•°: weapon_id = CSVã®æ­¦å™¨IDã€out_weapon = èª­ã¿è¾¼ã¿å…ˆ */
+/* ˆø”: weapon_id = CSV‚Ì•ŠíIDAout_weapon = “Ç‚İ‚İæ */
 static int load_shop_weapon_info(int weapon_id, ShopWeaponData* out_weapon) {
-    FILE* fp = fopen("æ­¦å™¨.csv", "r");
+    FILE* fp = fopen("•Ší.csv", "r");
     char line[512], * token;
     int k;
     if (fp == NULL) return 0;
@@ -73,14 +73,14 @@ static int load_shop_weapon_info(int weapon_id, ShopWeaponData* out_weapon) {
     return 0;
 }
 
-/* å¼•æ•°: items = åº—ã§æ‰±ã†ã‚¢ã‚¤ãƒ†ãƒ é…åˆ—ã€count = æœ‰åŠ¹ãªå€‹æ•° */
+/* ˆø”: items = “X‚Åˆµ‚¤ƒAƒCƒeƒ€”z—ñAcount = —LŒø‚ÈŒÂ” */
 static void print_item_table(const ShopItemData items[], int count) {
     int i;
     char heal_buf[64];
     printf("======================================================================\n");
-    printf("                         é“å…·å±‹ (æ‰€æŒé‡‘: %d G)\n", money);
+    printf("                         “¹‹ï‰® (Š‹à: %d G)\n", money);
     printf("======================================================================\n");
-    printf("  No. | %-20s | %-8s | %-6s | %-18s\n", "ã‚¢ã‚¤ãƒ†ãƒ å", "ä¾¡æ ¼", "æ‰€æŒæ•°", "å›å¾©åŠ¹æœ");
+    printf("  No. | %-20s | %-8s | %-6s | %-18s\n", "ƒAƒCƒeƒ€–¼", "‰¿Ši", "Š”", "‰ñ•œŒø‰Ê");
     printf("------+----------------------+----------+--------+--------------------\n");
 
     for (i = 0; i < count; i++) {
@@ -88,22 +88,22 @@ static void print_item_table(const ShopItemData items[], int count) {
         if (items[i].hp_heal > 0 && items[i].mp_heal > 0) sprintf(heal_buf, "HP:+%d MP:+%d", items[i].hp_heal, items[i].mp_heal);
         else if (items[i].hp_heal > 0) sprintf(heal_buf, "HP:+%d", items[i].hp_heal);
         else if (items[i].mp_heal > 0) sprintf(heal_buf, "MP:+%d", items[i].mp_heal);
-        else strcpy(heal_buf, "ãªã—");
+        else strcpy(heal_buf, "‚È‚µ");
 
-        printf("  %2d  | %-20s | %6d G | %4d å€‹ | %-18s\n", i + 1, items[i].name, items[i].price, can_item[items[i].id], heal_buf);
+        printf("  %2d  | %-20s | %6d G | %4d ŒÂ | %-18s\n", i + 1, items[i].name, items[i].price, can_item[items[i].id], heal_buf);
     }
-    printf("   0  | åº—ã‚’å‡ºã‚‹\n");
+    printf("   0  | “X‚ğo‚é\n");
     printf("======================================================================\n");
 }
 
-/* å¼•æ•°: weapons = åº—ã§æ‰±ã†æ­¦å™¨é…åˆ—ã€count = æœ‰åŠ¹ãªå€‹æ•° */
+/* ˆø”: weapons = “X‚Åˆµ‚¤•Ší”z—ñAcount = —LŒø‚ÈŒÂ” */
 static void print_weapon_table(const ShopWeaponData weapons[], int count) {
     int i;
     int pwr;
     printf("======================================================================\n");
-    printf("                         æ­¦å™¨å±‹ (æ‰€æŒé‡‘: %d G)\n", money);
+    printf("                         •Ší‰® (Š‹à: %d G)\n", money);
     printf("======================================================================\n");
-    printf("  No. | %-20s | %-8s | %-6s | %-10s\n", "æ­¦å™¨å", "ä¾¡æ ¼", "å¨åŠ›", "çŠ¶æ…‹");
+    printf("  No. | %-20s | %-8s | %-6s | %-10s\n", "•Ší–¼", "‰¿Ši", "ˆĞ—Í", "ó‘Ô");
     printf("------+----------------------+----------+--------+--------------------\n");
 
     for (i = 0; i < count; i++) {
@@ -111,13 +111,13 @@ static void print_weapon_table(const ShopWeaponData weapons[], int count) {
         if (level_of_story == 1) pwr = weapons[i].power_easy;
         else if (level_of_story == 3) pwr = weapons[i].power_hard;
 
-        printf("  %2d  | %-20s | %6d G | %6d | %-10s\n", i + 1, weapons[i].name, weapons[i].price, pwr, can_weapon[weapons[i].id] ? "æ‰€æŒæ¸ˆã¿" : "æœªæ‰€æŒ");
+        printf("  %2d  | %-20s | %6d G | %6d | %-10s\n", i + 1, weapons[i].name, weapons[i].price, pwr, can_weapon[weapons[i].id] ? "ŠÏ‚İ" : "–¢Š");
     }
-    printf("   0  | åº—ã‚’å‡ºã‚‹\n");
+    printf("   0  | “X‚ğo‚é\n");
     printf("======================================================================\n");
 }
 
-/* å¼•æ•°: first_idä»¥é™ã«ã‚¢ã‚¤ãƒ†ãƒ IDã‚’æŒ‡å®šã—ã€æœ€å¾Œã¯-1ã§çµ‚äº† */
+/* ˆø”: first_idˆÈ~‚ÉƒAƒCƒeƒ€ID‚ğw’è‚µAÅŒã‚Í-1‚ÅI—¹ */
 int item_shop(int first_id, ...) {
     ShopItemData items[100];
     int count = 0, id, choice;
@@ -132,14 +132,14 @@ int item_shop(int first_id, ...) {
         va_end(args);
     }
 
-    if (count == 0) { echof("å£²ã‚Šå‡ºã™ã‚¢ã‚¤ãƒ†ãƒ ãŒã‚ã‚Šã¾ã›ã‚“ã€‚\n"); return 0; }
+    if (count == 0) { echof("”„‚èo‚·ƒAƒCƒeƒ€‚ª‚ ‚è‚Ü‚¹‚ñB\n"); return 0; }
     cls();
-    echof("ã„ã‚‰ã£ã—ã‚ƒã„ã¾ã›ï¼\nã‚¢ã‚¤ãƒ†ãƒ ã‚·ãƒ§ãƒƒãƒ—ã¸ã‚ˆã†ã“ã");
+    echof("‚¢‚ç‚Á‚µ‚á‚¢‚Ü‚¹I\nƒAƒCƒeƒ€ƒVƒ‡ƒbƒv‚Ö‚æ‚¤‚±‚»");
 
     while (1) {
         cls();
         print_item_table(items, count);
-        printf("è³¼å…¥ã™ã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã‚’é¸æŠã—ã¦ãã ã•ã„ > ");
+        printf("w“ü‚·‚éƒAƒCƒeƒ€‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢ > ");
         if (scanf("%d", &choice) != 1) { while (getchar() != '\n'); continue; }
         while (getchar() != '\n');
 
@@ -147,11 +147,11 @@ int item_shop(int first_id, ...) {
         if (choice < 1 || choice > count) continue;
 
         choice--;
-        if (money < items[choice].price) { echof("\nãŠé‡‘ãŒè¶³ã‚Šã¾ã›ã‚“ï¼\n"); cls(); }
+        if (money < items[choice].price) { echof("\n‚¨‹à‚ª‘«‚è‚Ü‚¹‚ñI\n"); cls(); }
         else {
             money -= items[choice].price;
             can_item[items[choice].id]++;
-            echof("\n%s ã‚’è³¼å…¥ã—ã¾ã—ãŸï¼\n", items[choice].name);
+            echof("\n%s ‚ğw“ü‚µ‚Ü‚µ‚½I\n", items[choice].name);
             cls();
         }
     }
@@ -159,7 +159,7 @@ int item_shop(int first_id, ...) {
     return 1;
 }
 
-/* å¼•æ•°: first_idä»¥é™ã«æ­¦å™¨IDã‚’æŒ‡å®šã—ã€æœ€å¾Œã¯-1ã§çµ‚äº† */
+/* ˆø”: first_idˆÈ~‚É•ŠíID‚ğw’è‚µAÅŒã‚Í-1‚ÅI—¹ */
 int weapon_shop(int first_id, ...) {
     ShopWeaponData weapons[100];
     int count = 0, id, choice;
@@ -174,14 +174,14 @@ int weapon_shop(int first_id, ...) {
         va_end(args);
     }
 
-    if (count == 0) { echof("å£²ã‚Šå‡ºã™æ­¦å™¨ãŒã‚ã‚Šã¾ã›ã‚“ã€‚\n"); return 0; }
+    if (count == 0) { echof("”„‚èo‚·•Ší‚ª‚ ‚è‚Ü‚¹‚ñB\n"); return 0; }
     cls();
-    echof("ã„ã‚‰ã£ã—ã‚ƒã„ã¾ã›ï¼\næ­¦å™¨ã‚·ãƒ§ãƒƒãƒ—ã¸ã‚ˆã†ã“ã");
+    echof("‚¢‚ç‚Á‚µ‚á‚¢‚Ü‚¹I\n•ŠíƒVƒ‡ƒbƒv‚Ö‚æ‚¤‚±‚»");
 
     while (1) {
         cls();
         print_weapon_table(weapons, count);
-        printf("è³¼å…¥ã™ã‚‹æ­¦å™¨ã‚’é¸æŠã—ã¦ãã ã•ã„ > ");
+        printf("w“ü‚·‚é•Ší‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢ > ");
         if (scanf("%d", &choice) != 1) { while (getchar() != '\n'); continue; }
         while (getchar() != '\n');
 
@@ -189,12 +189,12 @@ int weapon_shop(int first_id, ...) {
         if (choice < 1 || choice > count) continue;
 
         choice--;
-        if (can_weapon[weapons[choice].id]) { echof("\næ—¢ã«æ‰€æŒã—ã¦ã„ã¾ã™ï¼\n"); cls(); }
-        else if (money < weapons[choice].price) { echof("\nãŠé‡‘ãŒè¶³ã‚Šã¾ã›ã‚“ï¼\n"); cls(); }
+        if (can_weapon[weapons[choice].id]) { echof("\nŠù‚ÉŠ‚µ‚Ä‚¢‚Ü‚·I\n"); cls(); }
+        else if (money < weapons[choice].price) { echof("\n‚¨‹à‚ª‘«‚è‚Ü‚¹‚ñI\n"); cls(); }
         else {
             money -= weapons[choice].price;
             can_weapon[weapons[choice].id] = 1;
-            echof("\n%s ã‚’è³¼å…¥ã—ã¾ã—ãŸï¼\n", weapons[choice].name);
+            echof("\n%s ‚ğw“ü‚µ‚Ü‚µ‚½I\n", weapons[choice].name);
             cls();
         }
     }
@@ -202,7 +202,7 @@ int weapon_shop(int first_id, ...) {
     return 1;
 }
 
-/* å¼•æ•°: å…ˆã«ã‚¢ã‚¤ãƒ†ãƒ IDã€æ¬¡ã«æ­¦å™¨IDã‚’æŒ‡å®šã—ã€ãã‚Œãã‚Œ-1ã§çµ‚äº† */
+/* ˆø”: æ‚ÉƒAƒCƒeƒ€IDAŸ‚É•ŠíID‚ğw’è‚µA‚»‚ê‚¼‚ê-1‚ÅI—¹ */
 int all_shop(int first_item_id, ...) {
     ShopItemData items[100];
     ShopWeaponData weapons[100];
@@ -222,15 +222,15 @@ int all_shop(int first_item_id, ...) {
     va_end(args);
 
     cls();
-    echof("ã„ã‚‰ã£ã—ã‚ƒã„ã¾ã›ï¼\nã‚ˆã‚ãšå±‹ã¸ã‚ˆã†ã“ã");
+    echof("‚¢‚ç‚Á‚µ‚á‚¢‚Ü‚¹I\n‚æ‚ë‚¸‰®‚Ö‚æ‚¤‚±‚»");
 
     while (1) {
         cls();
         printf("==================================================\n");
-        printf("               ã‚ˆã‚ãšå±‹ (æ‰€æŒé‡‘: %d G)\n", money);
+        printf("               ‚æ‚ë‚¸‰® (Š‹à: %d G)\n", money);
         printf("==================================================\n");
-        printf("  1. ã‚¢ã‚¤ãƒ†ãƒ ã‚’è²·ã†\n  2. æ­¦å™¨ã‚’è²·ã†\n  0. åº—ã‚’å‡ºã‚‹\n");
-        printf("==================================================\né¸æŠã—ã¦ãã ã•ã„ > ");
+        printf("  1. ƒAƒCƒeƒ€‚ğ”ƒ‚¤\n  2. •Ší‚ğ”ƒ‚¤\n  0. “X‚ğo‚é\n");
+        printf("==================================================\n‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢ > ");
 
         if (scanf("%d", &select_type) != 1) { while (getchar() != '\n'); continue; }
         while (getchar() != '\n');
@@ -241,17 +241,17 @@ int all_shop(int first_item_id, ...) {
             while (1) {
                 cls();
                 print_item_table(items, item_count);
-                printf("è³¼å…¥ã™ã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã‚’é¸æŠã—ã¦ãã ã•ã„ > ");
+                printf("w“ü‚·‚éƒAƒCƒeƒ€‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢ > ");
                 if (scanf("%d", &choice) != 1) { while (getchar() != '\n'); continue; }
                 while (getchar() != '\n');
                 if (choice == 0) break;
                 if (choice < 1 || choice > item_count) continue;
                 choice--;
-                if (money < items[choice].price) echof("\nãŠé‡‘ãŒè¶³ã‚Šã¾ã›ã‚“ï¼\n");
+                if (money < items[choice].price) echof("\n‚¨‹à‚ª‘«‚è‚Ü‚¹‚ñI\n");
                 else {
                     money -= items[choice].price;
                     can_item[items[choice].id]++;
-                    echof("\n%s ã‚’è³¼å…¥ã—ã¾ã—ãŸï¼\n", items[choice].name);
+                    echof("\n%s ‚ğw“ü‚µ‚Ü‚µ‚½I\n", items[choice].name);
                 }
             }
         }
@@ -259,18 +259,18 @@ int all_shop(int first_item_id, ...) {
             while (1) {
                 cls();
                 print_weapon_table(weapons, weapon_count);
-                printf("è³¼å…¥ã™ã‚‹æ­¦å™¨ã‚’é¸æŠã—ã¦ãã ã•ã„ > ");
+                printf("w“ü‚·‚é•Ší‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢ > ");
                 if (scanf("%d", &choice) != 1) { while (getchar() != '\n'); continue; }
                 while (getchar() != '\n');
                 if (choice == 0) break;
                 if (choice < 1 || choice > weapon_count) continue;
                 choice--;
-                if (can_weapon[weapons[choice].id]) echof("\næ—¢ã«æ‰€æŒã—ã¦ã„ã¾ã™ï¼\n");
-                else if (money < weapons[choice].price) echof("\nãŠé‡‘ãŒè¶³ã‚Šã¾ã›ã‚“ï¼\n");
+                if (can_weapon[weapons[choice].id]) echof("\nŠù‚ÉŠ‚µ‚Ä‚¢‚Ü‚·I\n");
+                else if (money < weapons[choice].price) echof("\n‚¨‹à‚ª‘«‚è‚Ü‚¹‚ñI\n");
                 else {
                     money -= weapons[choice].price;
                     can_weapon[weapons[choice].id] = 1;
-                    echof("\n%s ã‚’è³¼å…¥ã—ã¾ã—ãŸï¼\n", weapons[choice].name);
+                    echof("\n%s ‚ğw“ü‚µ‚Ü‚µ‚½I\n", weapons[choice].name);
                 }
             }
         }

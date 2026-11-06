@@ -6,21 +6,18 @@
             "type": "shell",
             "command": "gcc",
             "args": [
-                "-finput-charset=UTF-8",
+                "-finput-charset=cp932",
                 "-fexec-charset=UTF-8",
                 "-o",
                 "main",
-                "main.c",
-                "-lm",
-                "-ldl",
-                "-lpthread"
+                "main.c"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
             "windows": {
                 "args": [
-                    "-finput-charset=UTF-8",
+                    "-finput-charset=cp932",
                     "-fexec-charset=UTF-8",
                     "-o",
                     "main.exe",
@@ -57,10 +54,7 @@
                 "-g",
                 "${file}",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}",
-                "-lm",
-                "-ldl",
-                "-lpthread"
+                "${fileDirname}/${fileBasenameNoExtension}"
             ],
             "options": {
                 "cwd": "${fileDirname}"

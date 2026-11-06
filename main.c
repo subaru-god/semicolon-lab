@@ -39,12 +39,11 @@ int main(int argc, char* argv[])
         debug_mode = 1;
     }
 
-    configure_console_encoding();
     if (debug_mode == 1) {
-        echof("ãƒ‡ãƒãƒƒã‚°ãƒ¢ãƒ¼ãƒ‰ã‚’æœ‰åŠ¹ã«ã—ã¾ã—ãŸã€‚");
+        echof("ƒfƒoƒbƒOƒ‚[ƒh‚ğ—LŒø‚É‚µ‚Ü‚µ‚½B");
         cls();
     }
-
+    configure_console_encoding();
     time(NULL);
     set_up();
     prologue();
@@ -52,9 +51,8 @@ int main(int argc, char* argv[])
     if (debug_mode == 1) {
         debug();
     }
-    echof("ã‚²ãƒ¼ãƒ é–‹å§‹ã‹ã‚‰ã“ã“ã¾ã§%dç§’ãŠç–²ã‚Œã•ã¾ã§ã—ãŸã€‚", (int)time(NULL));
-    echof("ã“ã‚Œã¾ã§ãŠç–²ã‚Œã•ã¾ã§ã—ãŸã€‚");
-    echof("ã‚²ãƒ¼ãƒ ã‚’çµ‚äº†ã—ã¾ã™ã€‚");
-    audio_shutdown();
+    echof("ƒQ[ƒ€ŠJn‚©‚ç‚±‚±‚Ü‚Å%d•bŒo‰ß‚µ‚Ü‚µ‚½B", (int)time(NULL));
+    echof("‚±‚±‚Ü‚Å‚¨”æ‚ê—l‚Å‚µ‚½B");
+    echof("ƒQ[ƒ€‚ğI—¹‚µ‚Ü‚·B");
     return 0;
 }

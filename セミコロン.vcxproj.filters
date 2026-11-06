@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="sys.c">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="main.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -26,13 +23,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="sys.c">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
     <ClInclude Include="story.c">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
     <ClInclude Include="header.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="miniaudio.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
