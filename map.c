@@ -86,7 +86,10 @@ static int allocate_map(Map* map, int width, int height) {
 
     map->grid = (int**)malloc(sizeof(int*) * height);
     map->event_id = (char**)malloc(sizeof(char*) * height);
-    if (!map->grid || !map->event_id) return 0;
+    if (!map->grid || !map->event_id) {
+        log_error("MAP", "failed to allocate map arrays (%dx%d)", width, height);
+        return 0;
+    }
 
     for (y = 0; y < height; y++) {
         map->grid[y] = (int*)malloc(sizeof(int) * width);
@@ -96,6 +99,7 @@ static int allocate_map(Map* map, int width, int height) {
                 free(map->grid[i]); free(map->event_id[i]);
             }
             free(map->grid); free(map->event_id);
+            log_error("MAP", "failed to allocate map row %d (%dx%d)", y, width, height);
             return 0;
         }
         memset(map->grid[y], 0, sizeof(int) * width);
@@ -217,7 +221,10 @@ void display_map(const Map* map) {
 /* 引数: map = 出力先マップ、event_symbols/event_count = イベント定義、event_descs = 説明文 */
 static void generate_random_map(Map* map, const char event_symbols[], int event_count, const char* event_descs[]) {
     int x, y, i, width = 20, height = 10, rx, ry;
-    allocate_map(map, width, height);
+    if (!allocate_map(map, width, height)) {
+        log_error("MAP", "failed to allocate random map (%dx%d)", width, height);
+        return;
+    }
     strcpy(map->current_map_name, "ランダムマップ");
     map->event_desc_count = 0;
 
@@ -259,7 +266,11 @@ int load_map_from_file(Map* map, const char* filename, int spawn_id) {
     char line[512], spawn_char = (char)('0' + spawn_id);
     int max_w = 0, h = 0, len, x, y = 0, is_map_part = 1;
 
-    if (fp == NULL) { printf("エラー: マップファイル '%s' が開けませんでした。\n", filename); return 0; }
+    if (fp == NULL) {
+        printf("Map error: cannot open map file '%s'.\n", filename);
+        log_error("MAP", "cannot open map file %s", filename);
+        return 0;
+    }
     map->event_desc_count = 0;
 
     while (fgets(line, sizeof(line), fp) != NULL) {
@@ -271,13 +282,32 @@ int load_map_from_file(Map* map, const char* filename, int spawn_id) {
         }
     }
 
-    if (max_w == 0 || h == 0 || !allocate_map(map, max_w, h)) { fclose(fp); return 0; }
+    if (ferror(fp)) {
+        log_error("MAP", "failed while reading map file %s", filename);
+        fclose(fp);
+        return 0;
+    }
+    if (max_w == 0 || h == 0) {
+        log_error("MAP", "map file %s contains no map data", filename);
+        fclose(fp);
+        return 0;
+    }
+    if (!allocate_map(map, max_w, h)) {
+        log_error("MAP", "failed to allocate map for %s (%dx%d)", filename, max_w, h);
+        fclose(fp);
+        return 0;
+    }
 
     strcpy(map->current_map_name, filename);
     map->player_x = 1;
     map->player_y = 1;
 
-    fseek(fp, 0, SEEK_SET);
+    if (fseek(fp, 0, SEEK_SET) != 0) {
+        log_error("MAP", "failed to seek map file %s", filename);
+        free_map(map);
+        fclose(fp);
+        return 0;
+    }
     while (fgets(line, sizeof(line), fp) != NULL) {
         line[strcspn(line, "\r\n")] = '\0';
         len = (int)strlen(line);
@@ -309,6 +339,12 @@ int load_map_from_file(Map* map, const char* filename, int spawn_id) {
                 map->event_desc_count++;
             }
         }
+    }
+    if (ferror(fp)) {
+        log_error("MAP", "failed while parsing map file %s", filename);
+        free_map(map);
+        fclose(fp);
+        return 0;
     }
     fclose(fp);
     return 1;

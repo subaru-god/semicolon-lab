@@ -40,7 +40,9 @@ void echof(const char* format, ...) {
         "$s.Speak('%s');\" >nul 2>&1",
         clean_buffer);
 
-    system(command_buffer);
+    if (system(command_buffer) != 0) {
+        log_error("AUDIO", "failed to start speech command");
+    }
     // 画面には元のテキスト（改行あり）を表示
     printf("%s", text_buffer);
 	Sleep(3000); // 音声が途切れないように少し待機
@@ -68,10 +70,14 @@ void play_bgm(const char* filename) {
 
     /* BGMファイルを開く (alias: my_bgm として登録) */
     sprintf(cmd, "open \"%s\" type mpegvideo alias my_bgm", filename);
-    mciSendString(cmd, NULL, 0, NULL);
+    if (mciSendString(cmd, NULL, 0, NULL) != 0) {
+        log_error("AUDIO", "failed to open BGM: %s", filename);
+    }
 
     /* ループ再生を開始 */
-    mciSendString("play my_bgm repeat", NULL, 0, NULL);
+    if (mciSendString("play my_bgm repeat", NULL, 0, NULL) != 0) {
+        log_error("AUDIO", "failed to play BGM: %s", filename);
+    }
 #else
     (void)filename;
 #endif
@@ -107,6 +113,7 @@ void play_se(const char* filename) {
     int i;
 
     if (filename == NULL || filename[0] == '\0') {
+        log_error("AUDIO", "SE filename is empty");
         return;
     }
 
@@ -163,6 +170,7 @@ void play_se(const char* filename) {
      * SE_CHANNEL_COUNTを増やすと同時再生数を増やせる。
      */
     if (channel < 0) {
+        log_error("AUDIO", "no available SE channel for %s", filename);
         return;
     }
 
@@ -186,6 +194,7 @@ void play_se(const char* filename) {
     }
 
     if (mciSendStringA(command, NULL, 0, NULL) != 0) {
+        log_error("AUDIO", "failed to open SE: %s", filename);
         se_open[channel] = 0;
         return;
     }
@@ -193,6 +202,7 @@ void play_se(const char* filename) {
     sprintf(command, "play %s", alias);
 
     if (mciSendStringA(command, NULL, 0, NULL) != 0) {
+        log_error("AUDIO", "failed to play SE: %s", filename);
         sprintf(command, "close %s", alias);
         mciSendStringA(command, NULL, 0, NULL);
         se_open[channel] = 0;

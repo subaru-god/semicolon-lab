@@ -45,6 +45,29 @@
 /* 引数: path = ファイルパス、mode = fopenのモード
  * WindowsではCP932、Linux/macOSではUTF-8でファイルを開く。 
  */
+static void log_error(const char* category, const char* format, ...) {
+    FILE* fp;
+    time_t now;
+    struct tm* local_time;
+    char timestamp[32];
+    va_list args;
+
+    fp = fopen("error.log", "a");
+    if (fp == NULL) return;
+
+    now = time(NULL);
+    local_time = localtime(&now);
+    if (local_time != NULL) strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", local_time);
+    else strcpy(timestamp, "unknown-time");
+
+    fprintf(fp, "[%s] [%s] ", timestamp, category != NULL ? category : "GENERAL");
+    va_start(args, format);
+    vfprintf(fp, format, args);
+    va_end(args);
+    fputc('\n', fp);
+    fclose(fp);
+}
+
 static void report_file_open_error(const char* path);
 
 static FILE* project_fopen(const char* path, const char* mode) {
@@ -57,6 +80,7 @@ static FILE* project_fopen(const char* path, const char* mode) {
         size_t output_left = sizeof(utf8_path) - 1;
 
         if (converter == (iconv_t)-1) {
+            log_error("FILE", "iconv_open failed");
             perror("iconv_open");
             return NULL;
         }
@@ -65,6 +89,7 @@ static FILE* project_fopen(const char* path, const char* mode) {
             int saved_errno = errno;
             iconv_close(converter);
             errno = saved_errno;
+            log_error("FILE", "CP932 path conversion failed: %s", strerror(errno));
             perror("CP932 path conversion");
             return NULL;
         }
@@ -90,6 +115,7 @@ static void report_file_open_error(const char* path) {
     strncpy(last_path, path, sizeof(last_path) - 1);
     last_path[sizeof(last_path) - 1] = '\0';
     fprintf(stderr, "[FILE ERROR] cannot open %s: %s\n", path, strerror(errno));
+    log_error("FILE", "cannot open %s: %s", path, strerror(errno));
 }
 
 static void report_csv_error(const char* path, const char* detail) {
@@ -108,6 +134,7 @@ static void report_csv_error(const char* path, const char* detail) {
         reported_count++;
     }
     fprintf(stderr, "[CSV ERROR] %s\n", message);
+    log_error("CSV", "%s", message);
 }
 
 static FILE* open_csv_file(const char* path) {
