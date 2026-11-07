@@ -45,6 +45,8 @@
 /* 引数: path = ファイルパス、mode = fopenのモード
  * WindowsではCP932、Linux/macOSではUTF-8でファイルを開く。 
  */
+static void report_file_open_error(const char* path);
+
 static FILE* project_fopen(const char* path, const char* mode) {
     #if defined(__unix__) || defined(__APPLE__)
         iconv_t converter = iconv_open("UTF-8", "CP932");
@@ -69,14 +71,71 @@ static FILE* project_fopen(const char* path, const char* mode) {
 
         *output = '\0';
         iconv_close(converter);
-        return fopen(utf8_path, mode);
+        FILE* fp = fopen(utf8_path, mode);
+        if (fp == NULL) report_file_open_error(path);
+        return fp;
     #else
-        return fopen(path, mode);
+        FILE* fp = fopen(path, mode);
+        if (fp == NULL) report_file_open_error(path);
+        return fp;
     #endif
 }
 
 /* Windowsではfopenをproject_fopenに置き換える */
 #define fopen project_fopen
+
+static void report_file_open_error(const char* path) {
+    static char last_path[4096];
+    if (strcmp(last_path, path) == 0) return;
+    strncpy(last_path, path, sizeof(last_path) - 1);
+    last_path[sizeof(last_path) - 1] = '\0';
+    fprintf(stderr, "[FILE ERROR] cannot open %s: %s\n", path, strerror(errno));
+}
+
+static void report_csv_error(const char* path, const char* detail) {
+    static char reported[32][256];
+    static int reported_count = 0;
+    char message[256];
+    int i;
+
+    snprintf(message, sizeof(message), "%s: %s", path, detail);
+    for (i = 0; i < reported_count; i++) {
+        if (strcmp(reported[i], message) == 0) return;
+    }
+    if (reported_count < 32) {
+        strncpy(reported[reported_count], message, sizeof(reported[reported_count]) - 1);
+        reported[reported_count][sizeof(reported[reported_count]) - 1] = '\0';
+        reported_count++;
+    }
+    fprintf(stderr, "[CSV ERROR] %s\n", message);
+}
+
+static FILE* open_csv_file(const char* path) {
+    FILE* fp = project_fopen(path, "r");
+    int first_char;
+    if (fp == NULL) return NULL;
+    first_char = fgetc(fp);
+    if (first_char == EOF) {
+        report_csv_error(path, "file is empty or unreadable");
+        fclose(fp);
+        return NULL;
+    }
+    ungetc(first_char, fp);
+    return fp;
+}
+
+static int read_csv_header(FILE* fp, const char* path, char* line, size_t line_size) {
+    if (fgets(line, (int)line_size, fp) == NULL) {
+        report_csv_error(path, "header is missing or unreadable");
+        fclose(fp);
+        return 0;
+    }
+    return 1;
+}
+
+static void report_csv_read_error(FILE* fp, const char* path) {
+    if (ferror(fp)) report_csv_error(path, "read error");
+}
 
 /* コンソールの文字コードを設定する。
    WindowsではCP932、Linux/macOSではUTF-8を使用する。 */
@@ -110,6 +169,8 @@ extern int can_weapon[];     // 使用可能な武器のフラグ。
 extern int can_item[];       // 使用可能なアイテムのフラグ。
 extern int player_hp;        // プレイヤーの最大HP。
 extern int player_rest_hp;   // プレイヤーの残りHP。
+extern int player_max_mp;
+extern int player_mp;
 
 
 /* 関数宣言 */

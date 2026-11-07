@@ -143,13 +143,14 @@ static int load_map_item_info(int item_id, MapItemData* out_item) {
 
 static void use_map_item(void) {
     MapItemData items[100];
-    int count = 0, i, choice;
+    int count = 0, i, choice, old_hp, old_mp;
     cls();
 
     for (i = 1; i < 1000; i++) {
         if (can_item[i] >= 1) {
             MapItemData temp;
-            if (load_map_item_info(i, &temp) && temp.parent_id == 2) {
+            if (load_map_item_info(i, &temp) && temp.parent_id >= 1 && temp.parent_id <= 3 &&
+                (temp.hp_heal > 0 || temp.mp_heal > 0)) {
                 items[count++] = temp;
                 if (count >= 100) break;
             }
@@ -173,7 +174,14 @@ static void use_map_item(void) {
     if (choice <= 0 || choice > count) { cls(); return; }
 
     choice--;
-    echof("\n%s ‚ðŽg—p‚µ‚½I (HP:%d / MP:%d ‰ñ•œ)\n", items[choice].name, items[choice].hp_heal, items[choice].mp_heal);
+    old_hp = player_rest_hp;
+    player_rest_hp += items[choice].hp_heal;
+    if (player_rest_hp > player_hp) player_rest_hp = player_hp;
+    old_mp = player_mp;
+    player_mp += items[choice].mp_heal;
+    if (player_mp > player_max_mp) player_mp = player_max_mp;
+    echof("\nItem used: %s (HP:+%d / MP:+%d)\n",
+        items[choice].name, player_rest_hp - old_hp, player_mp - old_mp);
     can_item[items[choice].id]--;
     cls();
 }

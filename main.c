@@ -20,12 +20,14 @@ int can_weapon[1000];
 int can_item[1000];
 int player_hp = 100;
 int player_rest_hp = 100;
+int player_max_mp = 50;
+int player_mp = 50;
 
 #include "header.h"
 
+#include "story.c"
 #include "change.c"
 #include "sys.c"
-#include "story.c"
 #include "battle.c"
 #include "shop.c"
 #include "map.c"

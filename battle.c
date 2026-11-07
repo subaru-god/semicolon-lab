@@ -75,12 +75,12 @@ extern void change(void);
 
 /* 引数: elem_id = 属性ID、out_elem = 属性関係データの格納先 */
 static int load_element_relation(int elem_id, ElementRelation* out_elem) {
-    FILE* fp = fopen("属性対応.csv", "r");
+    FILE* fp = open_csv_file("属性対応.csv");
     char line[256];
     char* token;
 
     if (!fp) return 0;
-    fgets(line, sizeof(line), fp);
+    if (!read_csv_header(fp, "属性対応.csv", line, sizeof(line))) return 0;
 
     while (fgets(line, sizeof(line), fp)) {
         line[strcspn(line, "\r\n")] = '\0';
@@ -94,6 +94,7 @@ static int load_element_relation(int elem_id, ElementRelation* out_elem) {
             return 1;
         }
     }
+    report_csv_read_error(fp, "属性対応.csv");
     fclose(fp);
     return 0;
 }
@@ -117,10 +118,10 @@ static float get_element_multiplier(int atk_elem_id, int def_elem_id) {
 
 /* 引数: item_id = CSVのアイテムID、out_item = 読み込み先 */
 static int load_item_info(int item_id, ItemData* out_item) {
-    FILE* fp = fopen("アイテム.csv", "r");
+    FILE* fp = open_csv_file("アイテム.csv");
     char line[256], * token;
     if (!fp) return 0;
-    fgets(line, sizeof(line), fp);
+    if (!read_csv_header(fp, "アイテム.csv", line, sizeof(line))) return 0;
     while (fgets(line, sizeof(line), fp)) {
         line[strcspn(line, "\r\n")] = '\0';
         token = strtok(line, ",");
@@ -134,15 +135,16 @@ static int load_item_info(int item_id, ItemData* out_item) {
             fclose(fp); return 1;
         }
     }
+    report_csv_read_error(fp, "アイテム.csv");
     fclose(fp); return 0;
 }
 
 /* 引数: weapon_id = 武器ID、out_wep = 武器効果データの格納先 */
 static int load_weapon_effect(int weapon_id, WeaponEffectData* out_wep) {
-    FILE* fp = fopen("武器.csv", "r");
+    FILE* fp = open_csv_file("武器.csv");
     char line[512], * token;
     if (weapon_id <= 0 || !fp) return 0;
-    fgets(line, sizeof(line), fp);
+    if (!read_csv_header(fp, "武器.csv", line, sizeof(line))) return 0;
 
     while (fgets(line, sizeof(line), fp)) {
         line[strcspn(line, "\r\n")] = '\0';
@@ -165,16 +167,17 @@ static int load_weapon_effect(int weapon_id, WeaponEffectData* out_wep) {
             fclose(fp); return 1;
         }
     }
+    report_csv_read_error(fp, "武器.csv");
     fclose(fp); return 0;
 }
 
 /* 引数: target_id = 敵ID、out_enemy = 敵データの格納先 */
 static int load_enemy_info(int target_id, EnemyData* out_enemy) {
-    FILE* fp = fopen("敵.csv", "r");
+    FILE* fp = open_csv_file("敵.csv");
     char line[512], * token;
     int i;
     if (!fp) return 0;
-    fgets(line, sizeof(line), fp);
+    if (!read_csv_header(fp, "敵.csv", line, sizeof(line))) return 0;
     while (fgets(line, sizeof(line), fp)) {
         line[strcspn(line, "\r\n")] = '\0';
         token = strtok(line, ",");
@@ -191,6 +194,7 @@ static int load_enemy_info(int target_id, EnemyData* out_enemy) {
             fclose(fp); return 1;
         }
     }
+    report_csv_read_error(fp, "敵.csv");
     fclose(fp); return 0;
 }
 
@@ -227,11 +231,11 @@ static void parse_power_and_turns(const char* str, float* out_power, int* out_tu
 
 /* 引数: skill_id = スキルID、out_skill = スキルデータの格納先 */
 static int load_skill_info(int skill_id, SkillData* out_skill) {
-    FILE* fp = fopen("技一覧.csv", "r");
+    FILE* fp = open_csv_file("技一覧.csv");
     char line[512], * token;
     char power_str[64] = "";
     if (!fp) return 0;
-    fgets(line, sizeof(line), fp);
+    if (!read_csv_header(fp, "技一覧.csv", line, sizeof(line))) return 0;
     while (fgets(line, sizeof(line), fp)) {
         line[strcspn(line, "\r\n")] = '\0';
         token = strtok(line, ",");
@@ -249,6 +253,7 @@ static int load_skill_info(int skill_id, SkillData* out_skill) {
             fclose(fp); return 1;
         }
     }
+    report_csv_read_error(fp, "技一覧.csv");
     fclose(fp); return 0;
 }
 
@@ -435,7 +440,7 @@ static void enemy_turn_action(const EnemyData* enemy, BuffStatus* e_buff, BuffSt
 
 int battle(int e_id) {
     EnemyData enemy;
-    int e_hp, e_rest_hp, max_mp = 50, player_mp = 50;
+    int e_hp, e_rest_hp;
     char select;
     int rnd1, rnd2, damage, turn_acted;
     BuffStatus p_buff = { 1.0f, 0, 1.0f, 0, 1.0f, 0 };
@@ -458,7 +463,7 @@ int battle(int e_id) {
     while (e_rest_hp > 0 && player_rest_hp > 0) {
         cls();
         printf("\n----------------------------------------\n");
-        printf("%s HP %d/%d  VS  %s HP %d/%d (MP:%d/%d)\n", enemy.name, e_rest_hp, e_hp, name, player_rest_hp, player_hp, player_mp, max_mp);
+        printf("%s HP %d/%d  VS  %s HP %d/%d (MP:%d/%d)\n", enemy.name, e_rest_hp, e_hp, name, player_rest_hp, player_hp, player_mp, player_max_mp);
 
         if (p_buff.atk_turns > 0 || p_buff.def_turns > 0 || p_buff.mag_turns > 0) {
             printf("[自分バフ] ");
@@ -518,7 +523,7 @@ int battle(int e_id) {
             break;
 
         case '3':
-            turn_acted = select_item_phase_battle(&player_mp, max_mp);
+            turn_acted = select_item_phase_battle(&player_mp, player_max_mp);
             break;
 
         case '4':
