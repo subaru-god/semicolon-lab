@@ -40,10 +40,15 @@ int main(int argc, char* argv[])
     if (argc == 2 && strcmp(argv[1], "1") == 0) {
         debug_mode = 1;
     }
-
+    set_cursor_visible(1);
     if (debug_mode == 1) {
         echof("デバッグモードを有効にしました。");
-        cls();
+		strcpy(name, "テスト");
+		strcpy(call_name, "テスト");
+		level_of_story = 1;
+        can_item[1] = 1;
+        start_map_mode("サイショームラ_1.txt", 0, 0);
+        return 0;
     }
     configure_console_encoding();
     time(NULL);

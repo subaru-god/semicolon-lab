@@ -44,8 +44,4 @@
     <None Include="アイテム.csv" />
     <None Include="武器.csv" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="マップデータの書き方.txt" />
-    <Text Include="サイショームラ_1.txt" />
-  </ItemGroup>
 </Project>

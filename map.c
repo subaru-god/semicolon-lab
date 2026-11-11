@@ -48,6 +48,21 @@ static void set_cursor_pos(int x, int y) {
 #endif
 }
 
+static void set_cursor_visible(int visible) {
+#ifdef _WIN32
+    CONSOLE_CURSOR_INFO cursor_info;
+    HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    if (GetConsoleCursorInfo(console, &cursor_info)) {
+        cursor_info.bVisible = visible ? TRUE : FALSE;
+        SetConsoleCursorInfo(console, &cursor_info);
+    }
+#else
+    printf("\033[?25%c", visible ? 'h' : 'l');
+    fflush(stdout);
+#endif
+}
+
 static int read_map_key(void) {
 #ifdef _WIN32
     return _getch();
@@ -368,31 +383,78 @@ static int handle_event_point(char symbol, const char* map_name) {
             echof("頑張ってらっしゃい");
             break;
 
+		case 'H':
+			if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
+				echof("人がたっている...\n内容は未定だ！\n");
+				cls();
+			}
+			break;
+
         case 'I':
             echof("アイテムショップへ入った！\n");
-            if (strcmp(map_name, "サイショームラ_1.txt") == 0) item_shop(1, 2, 3, -1);
+            if (strcmp(map_name, "サイショームラ_1.txt") == 0) {
+                item_shop(1, 2, 3, -1);
+            }
             break;
 
-        case 'O':
-            if (strcmp(map_name, "サイショームラ_1.txt") == 0) {
-                echof("町の外へ出た！\n");
-                start_map_mode("random", 0, 1, 20, 21, 22, -1);
-                return 0;
+		case 'J':
+			if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
+				echof("人がたっている...\n内容は未定だ！\n");
+				cls();
+			}
+			break;
+
+		case 'K':
+            if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
+                echof("人がたっている...\n内容は未定だ！\n");
+                cls();
             }
+            break;
+
+		case 'L':
+			if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
+				echof("人がたっている...\n内容は未定だ！\n");
+				cls();
+			}
+			break;
 
         case 'Q':
-            echof("町を出た\n");
-            return 0;
-
-        case 'Y':
-            echof("よろず屋へ入った！\n");
-            if (strcmp(map_name, "サイショームラ_1.txt") == 0) all_shop(1, 2, 3, -1, 1, 2, 3, -1);
+            if (strcmp(map_name, "サイショームラ_1.txt") == 0) {
+                echof("町の外へ出た！\n");
+                start_map_mode("サイショームラからセカンドラ.txt", 0, 1, 13, 7, 1, -1);
+                return 0;
+            }
             break;
+
+		case 'T':
+			if (strcmp(map_name, "サイショームラ_1.txt") == 0) {
+				echof("看板がある...\n内容は未定\n");
+				cls();
+			}
+			break;
+
+		case 'V':
+			if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
+				echof("サイショームラへ入った！\n");
+				start_map_mode("サイショームラ_1.txt", 1,0);
+                return 0;
+            }
+			break;
 
         case 'W':
             echof("武器屋へ入った！\n");
-            if (strcmp(map_name, "サイショームラ_1.txt") == 0) weapon_shop(1, 2, 3, -1);
+            if (strcmp(map_name, "サイショームラ_1.txt") == 0){
+                weapon_shop(1, 2, 3, -1);
+            }
             break;
+
+        case 'Y':
+            echof("よろず屋へ入った！\n");
+            if (strcmp(map_name, "サイショームラ_1.txt") == 0) {
+                all_shop(1, 2, 3, -1, 1, 2, 3, -1);
+            }
+            break;
+
 
         default:
             echof("【%c】何も起こらなかった...\n", symbol);
@@ -467,11 +529,13 @@ void start_map_mode(const char* filename, int spawn_id, int has_enemy, ...) {
     va_end(args);
 
     while (1) {
+        set_cursor_visible(0);
         display_map(&map);
         key = (char)read_map_key();
         if (!move_player(&map, key, has_enemy, enemy_ids, enemy_count)) break;
     }
 
+    set_cursor_visible(1);
     free_map(&map);
     cls();
 }

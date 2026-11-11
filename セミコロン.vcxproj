@@ -168,10 +168,6 @@
     <None Include="敵.csv" />
     <None Include="武器.csv" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="サイショームラ_1.txt" />
-    <Text Include="マップデータの書き方.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

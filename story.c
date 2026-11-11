@@ -125,9 +125,10 @@ int story_1(void) {
     echof("2.魔法 ＞1.アイス を選択して使えます。早速使ってみましょう");
     play_bgm("battle.mp3");
     battle(20);
+    open_map:
     echof("使い方がわかったので町へ出てみてみましょう");
     can_item[1] = 1;
-    start_map_mode("サイショームラ.txt", 0, 0);
+    start_map_mode("サイショームラ_1.txt", 0, 0);
     return 0;
 }
 
