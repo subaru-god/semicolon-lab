@@ -383,12 +383,12 @@ static int handle_event_point(char symbol, const char* map_name) {
             echof("頑張ってらっしゃい");
             break;
 
-		case 'H':
-			if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
-				echof("人がたっている...\n内容は未定だ！\n");
-				cls();
-			}
-			break;
+        case 'H':
+            if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
+                echof("人がたっている...\n内容は未定だ！\n");
+                cls();
+            }
+            break;
 
         case 'I':
             echof("アイテムショップへ入った！\n");
@@ -397,26 +397,62 @@ static int handle_event_point(char symbol, const char* map_name) {
             }
             break;
 
-		case 'J':
-			if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
-				echof("人がたっている...\n内容は未定だ！\n");
-				cls();
-			}
-			break;
-
-		case 'K':
+        case 'J':
             if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
                 echof("人がたっている...\n内容は未定だ！\n");
                 cls();
             }
             break;
 
-		case 'L':
-			if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
-				echof("人がたっている...\n内容は未定だ！\n");
-				cls();
-			}
-			break;
+        case 'K':
+            if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
+                echof("人がたっている...\n内容は未定だ！\n");
+                cls();
+            }
+            break;
+
+        case 'L':
+            if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
+                echof("人がたっている...\n内容は未定だ！\n");
+                cls();
+            }
+            break;
+
+        case 'N':
+            if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
+                if (story_progress[0] == 0) {
+                    echof("誰かが仁王立ちで立っている。");
+                    echof("誰かが話しかけてきた。");
+                    echof("我は四天王が一人、氷結の槍騎士である。");
+                    echof("魔王様に言われてきてみれば、なるほど、お前が新しい勇者か。");
+                    echof("魔王様はまた前のようになることを嫌がっていらっしゃる。");
+                    cls();
+                    echof("ここで引いてもらうぞ。");
+                    result=battle(3);
+                    if (result==1) {
+                        story_progress[0] = 1;
+                        echof("流石は前の勇者の息子か...");
+                        echof("残念だが我ではかなわないようだ");
+                        echof("残りの四天王に、この使命は託すとしよう");
+                        echof("さらばだ");
+                        cls();
+                        start_map_mode("セカンドラ.txt", 0, 0);
+                        return 0;
+                    }
+                    else {
+                        echof("勇者の息子というのは名前だけだったのだな");
+                        echof("残念だが、ここは通すことができない。");
+                        echof("また来世で会おう");
+                        cls();
+                        echof("ゲームオーバーになりました。");
+                        echof("トピック：レベル上げをしてまた挑んでみよう。");
+                        cls();
+                        break;
+                    }
+
+                }
+            }
+            break;
 
         case 'Q':
             if (strcmp(map_name, "サイショームラ_1.txt") == 0) {
@@ -426,20 +462,26 @@ static int handle_event_point(char symbol, const char* map_name) {
             }
             break;
 
-		case 'T':
-			if (strcmp(map_name, "サイショームラ_1.txt") == 0) {
-				echof("看板がある...\n内容は未定\n");
-				cls();
-			}
-			break;
+        case 'T':
+            if (strcmp(map_name, "サイショームラ_1.txt") == 0) {
+                echof("看板がある...\n内容は未定\n");
+                cls();
+            }
+            break;
 
-		case 'V':
-			if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
-				echof("サイショームラへ入った！\n");
-				start_map_mode("サイショームラ_1.txt", 1,0);
+        case 'V':
+            if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
+                echof("サイショームラへ入った！\n");
+                start_map_mode("サイショームラ_1.txt", 1,0);
                 return 0;
             }
-			break;
+            elseif(strcmp(map_name, "セカンドラ.txt") == 0); {
+                cls();
+                echof("セカンドラをでた！\n");
+                start_map_mode("サイショームラからセカンドラ.txt", 0, 0);
+                return 0;
+            }
+            break;
 
         case 'W':
             echof("武器屋へ入った！\n");

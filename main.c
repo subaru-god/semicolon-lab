@@ -22,6 +22,7 @@ int player_hp = 100;
 int player_rest_hp = 100;
 int player_max_mp = 50;
 int player_mp = 50;
+int story_progress[100] = 0;
 
 #include "header.h"
 
