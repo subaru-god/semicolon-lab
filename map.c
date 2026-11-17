@@ -28,7 +28,6 @@ typedef struct {
 } MapItemData;
 
 /* heder.h で宣言されているのでコメントアウトして動作確認
-extern void echof(const char* format, ...);
 extern int battle(int e_id);
 extern int item_shop(int first_id, ...);
 extern int weapon_shop(int first_id, ...);
@@ -472,10 +471,9 @@ static int handle_event_point(char symbol, const char* map_name) {
         case 'V':
             if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
                 echof("サイショームラへ入った！\n");
-                start_map_mode("サイショームラ_1.txt", 1,0);
+                start_map_mode("サイショームラ_1.txt", 1, 0);
                 return 0;
-            }
-            elseif(strcmp(map_name, "セカンドラ.txt") == 0); {
+            }else if(strcmp(map_name, "セカンドラ.txt") == 0) {
                 cls();
                 echof("セカンドラをでた！\n");
                 start_map_mode("サイショームラからセカンドラ.txt", 0, 0);

@@ -35,7 +35,44 @@ typedef struct {
     int element_id;
     int skill_ids[4];
     float skill_probs[4];
+    int exp;
 } EnemyData;
+
+static int load_enemy_exp(int target_id) {
+    FILE* fp = open_csv_file("“G.csv");
+    char line[512];
+    char* cursor;
+    char* comma;
+    int field_index;
+    int id;
+    int exp = 0;
+
+    if (!fp) return 0;
+    if (!read_csv_header(fp, "“G.csv", line, sizeof(line))) return 0;
+    while (fgets(line, sizeof(line), fp)) {
+        line[strcspn(line, "\r\n")] = '\0';
+        cursor = line;
+        for (field_index = 0; field_index < 16; field_index++) {
+            comma = strchr(cursor, ',');
+            if (!comma) {
+                if (field_index == 0) id = atoi(cursor);
+                cursor = "";
+                break;
+            }
+            *comma = '\0';
+            if (field_index == 0) id = atoi(cursor);
+            cursor = comma + 1;
+        }
+        if (id == target_id) {
+            exp = atoi(cursor);
+            fclose(fp);
+            return exp;
+        }
+    }
+    report_csv_read_error(fp, "“G.csv");
+    fclose(fp);
+    return 0;
+}
 
 typedef struct {
     int id;
@@ -69,7 +106,6 @@ extern int level_of_story;
 extern int current_weapon_id;
 extern int player_hp;
 extern int player_rest_hp;
-extern void echof(const char* format, ...);
 extern void change(void);
 */
 
@@ -452,7 +488,11 @@ int battle(int e_id) {
         strcpy(enemy.name, "ƒXƒ‰ƒCƒ€");
         enemy.hp = 30;
         enemy.element_id = 1;
+        enemy.exp = 0;
         enemy.skill_ids[0] = 0; enemy.skill_probs[0] = 1.0f;
+    }
+    else {
+        enemy.exp = load_enemy_exp(e_id);
     }
     e_hp = enemy.hp;
     e_rest_hp = e_hp;
@@ -545,6 +585,7 @@ int battle(int e_id) {
 
     if (e_rest_hp <= 0) {
         echof("\n%s‚ð“|‚µ‚½IŸ—˜I\n", enemy.name);
+        player_exp += enemy.exp;
         cls();
         return 1;
     }

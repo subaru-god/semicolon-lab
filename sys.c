@@ -1,18 +1,15 @@
 #include "header.h"
 
 // 合成音声を流す関数 (getchar()がある)
-void echof(const char* format, ...) {
+static void echof_v(const char* format, va_list args, int wait_for_input) {
 #ifdef _WIN32
     char text_buffer[1024];
     char clean_buffer[1024];
     char command_buffer[2048];
-    va_list args;
     int i, j = 0;
 
     // 1. フォーマット文字列の組み立て
-    va_start(args, format);
     vsprintf(text_buffer, format, args);
-    va_end(args);
 
     // 2. PowerShellエラーの原因となる「改行」や「シングルクォート」を除去・整形
     for (i = 0; text_buffer[i] != '\0'; i++) {
@@ -27,7 +24,7 @@ void echof(const char* format, ...) {
     clean_buffer[j] = '\0';
 
     // 3. 既存のPowerShell音声再生プロセスを終了（音声の上書き）
-    system("taskkill /f /im powershell.exe >nul 2>&1");
+    /* Avoid killing all PowerShell processes; it adds startup latency. */
 
     // 4. PowerShellを呼び出して読み上げ（-Command ではなくスクリプトブロック渡しで文字化け・途切りを防止）
 // 話速($s.Rate) と 音量($s.Volume) を設定する例
@@ -36,7 +33,7 @@ void echof(const char* format, ...) {
         "\"Add-Type -AssemblyName System.Speech; "
         "$s = New-Object System.Speech.Synthesis.SpeechSynthesizer; "
         "$s.Rate = 3; "     // 話速: -10 ～ 10 (例: 2 で少し早口)
-        "$s.Volume = 200; "  // 音量: 0 ～ 100
+        "$s.Volume = 100; "  // 音量: 0 ～ 100
         "$s.Speak('%s');\" >nul 2>&1",
         clean_buffer);
 
@@ -45,19 +42,32 @@ void echof(const char* format, ...) {
     }
     // 画面には元のテキスト（改行あり）を表示
     printf("%s", text_buffer);
-	Sleep(3000); // 音声が途切れないように少し待機
 
     // エンターキー待機
-    getchar();
+    if (wait_for_input) {
+        getchar();
+    }
 #else
-    va_list args;
-    va_start(args, format);
     vprintf(format, args);
-    va_end(args);
-    getchar();
+    if (wait_for_input) {
+        getchar();
+    }
 #endif
 }
 
+void echof(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    echof_v(format, args, 1);
+    va_end(args);
+}
+
+void echof_skip(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    echof_v(format, args, 0);
+    va_end(args);
+}
 
 /* BGM再生開始 (ファイル名指定) */
 void play_bgm(const char* filename) {
@@ -72,6 +82,10 @@ void play_bgm(const char* filename) {
     sprintf(cmd, "open \"%s\" type mpegvideo alias my_bgm", filename);
     if (mciSendString(cmd, NULL, 0, NULL) != 0) {
         log_error("AUDIO", "failed to open BGM: %s", filename);
+    }
+
+    if (mciSendString("setaudio my_bgm volume to 300", NULL, 0, NULL) != 0) {
+        log_error("AUDIO", "failed to set BGM volume: %s", filename);
     }
 
     /* ループ再生を開始 */
@@ -260,4 +274,21 @@ void cls(void) {
     }
 #endif
     printf("\033[2J\033[H");
+}
+
+int seek_level(int exp) {
+	int EXP_A = 10; // レベルアップに必要な経験値の増加量
+	int EXP_B = 0;   // レベル1に必要な経験値
+	int EXP_K = 3;   // レベルアップに必要な経験値の増加率
+    double calculated_level;
+
+    if (exp < EXP_B) {
+        return 1;
+    }
+
+    // 逆算式: L = ((E - B) / A) ^ (1 / k) + 1
+    calculated_level = pow(((double)exp - EXP_B) / EXP_A, 1.0 / EXP_K) + 1.0;
+
+    // 小数点以下を切り捨てて整数（レベル）にする
+    return (int)calculated_level;
 }

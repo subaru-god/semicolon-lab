@@ -15,7 +15,6 @@ extern int money;
 extern int can_item[];
 extern int can_weapon[];
 extern int level_of_story;
-extern void echof(const char* format, ...);
 */
 
 /* 引数: item_id = CSVのアイテムID、out_item = 読み込み先 */

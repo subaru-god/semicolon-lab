@@ -10,6 +10,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <errno.h>
+#include <math.h>
 
 #if defined(__unix__) || defined(__APPLE__)
     #include <iconv.h>
@@ -205,6 +206,7 @@ extern int player_mp;
 /* 書式付きの文字列を表示する。
  引数: format = printf形式の書式文字列、後続の引数 = 書式指定に入れる値 */
 void echof(const char* format, ...);
+void echof_skip(const char* format, ...);
 /* BGMを再生する。
  引数: ファイル名 */
 void play_bgm(const char* filename);

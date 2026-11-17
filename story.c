@@ -18,7 +18,6 @@ extern int cache;
 extern int cache2;
 extern int cache3[];
 extern char cache_str[];
-extern void echof(const char* format, ...);
 extern void play_bgm(const char* filename);
 extern void stop_bgm(void);
 extern int battle(int e_id);
@@ -39,7 +38,8 @@ void set_up(void) {
         printf("名前を入力してください：");
         scanf(" %1000s", name);
         while (getchar() != '\n');
-        printf("%sでよろしいですね？y/n：", name);
+        echof_skip("%sでよろしいですね？", name ,-1);
+		printf("y/n：");
         scanf(" %c", &user_select);
         while (getchar() != '\n');
     } while (user_select != 'y');
@@ -49,7 +49,8 @@ void set_up(void) {
         printf("何て呼べばいいですか：");
         scanf(" %s", call_name);
         while (getchar() != '\n');
-        printf("%sでよろしいですね？y/n：", call_name);
+        echof_skip("%sでよろしいですね？", call_name , -1);
+		printf("y/n：");
         scanf(" %c", &user_select);
         while (getchar() != '\n');
     } while (user_select != 'y');
@@ -62,7 +63,8 @@ void set_up(void) {
             while (getchar() != '\n');
         } while (level_of_story < 1 || level_of_story > 3);
 
-        printf("%dでよろしいですね？y/n：", level_of_story);
+        echof_skip("%dでよろしいですね？", level_of_story ,-1);
+		printf("y/n：");
         scanf(" %c", &user_select);
         while (getchar() != '\n');
     } while (user_select != 'y');

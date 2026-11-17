@@ -6,7 +6,6 @@ extern int level_of_story;
 extern int sum_ap;
 extern int current_weapon_id;
 extern int ap;
-extern void echof(const char* format, ...);
 */
 
 typedef struct {
