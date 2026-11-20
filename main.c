@@ -18,7 +18,7 @@ int current_weapon_id;
 int can_magics[1000];
 int can_weapon[1000];
 int can_item[1000];
-int player_hp = 100;
+int player_max_hp = 100;
 int player_rest_hp = 100;
 int player_max_mp = 50;
 int player_mp = 50;

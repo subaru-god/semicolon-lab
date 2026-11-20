@@ -195,7 +195,7 @@ extern int current_weapon_id;// 現在装備している武器のID。
 extern int can_magics[];     // 習得済み魔法のフラグ。
 extern int can_weapon[];     // 使用可能な武器のフラグ。
 extern int can_item[];       // 使用可能なアイテムのフラグ。
-extern int player_hp;        // プレイヤーの最大HP。
+extern int player_max_hp;        // プレイヤーの最大HP。
 extern int player_rest_hp;   // プレイヤーの残りHP。
 extern int player_max_mp;
 extern int player_mp;

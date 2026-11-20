@@ -104,7 +104,7 @@ extern int can_item[];
 extern int sum_ap;
 extern int level_of_story;
 extern int current_weapon_id;
-extern int player_hp;
+extern int player_max_hp;
 extern int player_rest_hp;
 extern void change(void);
 */
@@ -421,7 +421,7 @@ static int select_item_phase_battle(int* player_mp, int max_mp) {
 
     if (items[choice].hp_heal > 0) {
         player_rest_hp += items[choice].hp_heal;
-        if (player_rest_hp > player_hp) player_rest_hp = player_hp;
+        if (player_rest_hp > player_max_hp) player_rest_hp = player_max_hp;
     }
     if (items[choice].mp_heal > 0) {
         *player_mp += items[choice].mp_heal;
@@ -503,7 +503,7 @@ int battle(int e_id) {
     while (e_rest_hp > 0 && player_rest_hp > 0) {
         cls();
         printf("\n----------------------------------------\n");
-        printf("%s HP %d/%d  VS  %s HP %d/%d (MP:%d/%d)\n", enemy.name, e_rest_hp, e_hp, name, player_rest_hp, player_hp, player_mp, player_max_mp);
+        printf("%s HP %d/%d  VS  %s HP %d/%d (MP:%d/%d)\n", enemy.name, e_rest_hp, e_hp, name, player_rest_hp, player_max_hp, player_mp, player_max_mp);
 
         if (p_buff.atk_turns > 0 || p_buff.def_turns > 0 || p_buff.mag_turns > 0) {
             printf("[自分バフ] ");
@@ -586,12 +586,18 @@ int battle(int e_id) {
     if (e_rest_hp <= 0) {
         echof("\n%sを倒した！勝利！\n", enemy.name);
         player_exp += enemy.exp;
+		echof("経験値 %d を獲得！\n", enemy.exp);
+		seek_level();
         cls();
         return 1;
     }
     else {
         echof("\n%sは倒れてしまった...\n", name);
         cls();
+        echof("ゲームオーバーになりました。");
+        echof("トピック：レベル上げをしてまた挑んでみよう。");
+        cls();
+        player_rest_hp = player_max_hp;
         return 0;
     }
 }

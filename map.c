@@ -194,7 +194,7 @@ static void use_map_item(void) {
     choice--;
     old_hp = player_rest_hp;
     player_rest_hp += items[choice].hp_heal;
-    if (player_rest_hp > player_hp) player_rest_hp = player_hp;
+    if (player_rest_hp > player_max_hp) player_rest_hp = player_max_hp;
     old_mp = player_mp;
     player_mp += items[choice].mp_heal;
     if (player_mp > player_max_mp) player_mp = player_max_mp;
@@ -442,9 +442,6 @@ static int handle_event_point(char symbol, const char* map_name) {
                         echof("勇者の息子というのは名前だけだったのだな");
                         echof("残念だが、ここは通すことができない。");
                         echof("また来世で会おう");
-                        cls();
-                        echof("ゲームオーバーになりました。");
-                        echof("トピック：レベル上げをしてまた挑んでみよう。");
                         cls();
                         break;
                     }

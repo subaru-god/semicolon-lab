@@ -276,19 +276,27 @@ void cls(void) {
     printf("\033[2J\033[H");
 }
 
-int seek_level(int exp) {
-	int EXP_A = 10; // レベルアップに必要な経験値の増加量
-	int EXP_B = 0;   // レベル1に必要な経験値
-	int EXP_K = 3;   // レベルアップに必要な経験値の増加率
+int seek_level(void) {
+    int EXP_A = 10; // レベルアップに必要な経験値の増加量
+    int EXP_B = 0;   // レベル1に必要な経験値
+    int EXP_K = 3;   // レベルアップに必要な経験値の増加率
     double calculated_level;
 
-    if (exp < EXP_B) {
+    if (player_exp < EXP_B) {
         return 1;
     }
 
+
     // 逆算式: L = ((E - B) / A) ^ (1 / k) + 1
-    calculated_level = pow(((double)exp - EXP_B) / EXP_A, 1.0 / EXP_K) + 1.0;
+    calculated_level = pow(((double)player_exp - EXP_B) / EXP_A, 1.0 / EXP_K) + 1.0;
+
+    if (player_level != (int)calculated_level) {
+        player_level = (int)calculated_level;
+        echof("レベルが %d に上がった！\n", player_level);
+    }
 
     // 小数点以下を切り捨てて整数（レベル）にする
     return (int)calculated_level;
 }
+
+// atk^2 / (atk + def) の計算

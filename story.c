@@ -9,7 +9,7 @@ extern int money;
 extern int result;
 extern int ap;
 extern int sum_ap;
-extern int player_hp;
+extern int player_max_hp;
 extern int player_rest_hp;
 extern int can_item[];
 extern int can_weapon[];
@@ -143,8 +143,8 @@ int debug(void) {
     weapon_shop(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, -1);
     all_shop(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1);
 
-    player_hp = 10000;
-    player_rest_hp = player_hp;
+    player_max_hp = 10000;
+    player_rest_hp = player_max_hp;
     for (i = 1; i < 18; i++) can_weapon[i] = 1;
     for (i = 1; i < 40; i++) can_magics[i] = 1;
     for (i = 1; i < 16; i++) can_item[i] = 20;
