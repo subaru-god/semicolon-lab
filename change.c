@@ -52,9 +52,27 @@ static int load_weapon_info(int weapon_id, WeaponData* out_weapon) {
     return 0;
 }
 
-void change(void) {
+static int get_weapon_power(const WeaponData* weapon) {
+    if (level_of_story == 1) return weapon->power_easy;
+    if (level_of_story == 3) return weapon->power_hard;
+    return weapon->power_normal;
+}
+
+static void equip_weapon(const WeaponData* weapon) {
+    current_weapon_id = weapon->id;
+    sum_ap = get_weapon_power(weapon) + ap;
+}
+
+void change(int weapon_id) {
     WeaponData available_weapons[100];
-    int count = 0, i, choice, selected_power;
+    int count = 0, i, choice;
+
+    if (weapon_id > 0) {
+        WeaponData weapon;
+        if (!can_weapon[weapon_id] || !load_weapon_info(weapon_id, &weapon)) return;
+        equip_weapon(&weapon);
+        return;
+    }
 
     for (i = 1; i < 1000; i++) {
         if (can_weapon[i] == 1 && load_weapon_info(i, &available_weapons[count])) {
@@ -91,14 +109,7 @@ void change(void) {
     }
 
     choice--;
-    current_weapon_id = available_weapons[choice].id;
-
-    if (level_of_story == 1) selected_power = available_weapons[choice].power_easy;
-    else if (level_of_story == 2) selected_power = available_weapons[choice].power_normal;
-    else if (level_of_story == 3) selected_power = available_weapons[choice].power_hard;
-    else selected_power = available_weapons[choice].power_normal;
-
-    sum_ap = selected_power + ap;
+    equip_weapon(&available_weapons[choice]);
     echof("\n%s ‚ð‘•”õ‚µ‚Ü‚µ‚½IiUŒ‚—Í: %dj\n", available_weapons[choice].name, sum_ap);
     cls();
 }

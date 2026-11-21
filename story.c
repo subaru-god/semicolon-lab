@@ -21,7 +21,7 @@ extern char cache_str[];
 extern void play_bgm(const char* filename);
 extern void stop_bgm(void);
 extern int battle(int e_id);
-extern void change(void);
+extern void change(int weapon_id);
 extern int item_shop(int first_id, ...);
 extern int weapon_shop(int first_id, ...);
 extern int all_shop(int first_id, ...);
@@ -116,7 +116,7 @@ int story_1(void) {
     echof("\n木の棒を受け取りました。");
     can_weapon[1] = 1;
     echof("木の棒は装備品です。装備してみましょう");
-    change();
+    change(1);
     echof("お母さんのお守りを受け取りました");
     play_se("get_item.mp3");
     echof("\nただのお守りだけどきっとあなたを守ってくれるはずよ。");
@@ -129,7 +129,6 @@ int story_1(void) {
     battle(20);
     open_map:
     echof("使い方がわかったので町へ出てみてみましょう");
-    can_item[1] = 1;
     start_map_mode("サイショームラ_1.txt", 0, 0);
     return 0;
 }

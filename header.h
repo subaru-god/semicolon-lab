@@ -258,7 +258,7 @@ int all_shop(int first_id, ...);
  */
 void start_map_mode(const char* filename, int spawn_id, int has_enemy, ...);
 // プレイヤーの装備を変更する。
-void change(void);
+void change(int weapon_id);
 // ゲームデータを初期化する。
 void set_up(void);
 // プロローグを実行する。

@@ -300,9 +300,6 @@ int seek_level(void) {
     if (player_level != (int)calculated_level) {
         player_level = (int)calculated_level;
         echof("レベルが %d に上がった！\n", player_level);
-		player_mp = player_max_mp;
-		player_rest_hp = player_max_hp;
-		echof("HPとMPが全回復しました。\n");
 
 
 
@@ -310,7 +307,16 @@ int seek_level(void) {
         ratio = (double)(player_level - 1) / (double)(max_level - 1);
 
         // 累乗成長式の計算
-        atk_min + (atk_max - atk_min) * pow(ratio, p);
+        ap = atk_min + (atk_max - atk_min) * pow(ratio, p);
+        change(current_weapon_id);
+        sum_ap =  + ap;
+
+		echof("攻撃力が %d に上がった！\n", ap);
+
+        player_mp = player_max_mp;
+        player_rest_hp = player_max_hp;
+        echof("HPとMPが全回復しました。\n");
+
     }
 
     // 小数点以下を切り捨てて整数（レベル）にする
