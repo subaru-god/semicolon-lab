@@ -596,7 +596,7 @@ int battle(int e_id) {
         cls();
         echof("ゲームオーバーになりました。");
 		cache = (int)money / 3;
-		echof("所持金が%dG　から　になった。", money, cache);
+		echof("所持金が %dG から %dG になった。", money, cache);
 		money = cache;
         echof("トピック：レベル上げをしてまた挑んでみよう。");
         cls();
