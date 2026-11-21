@@ -453,7 +453,7 @@ static int handle_event_point(char symbol, const char* map_name) {
         case 'Q':
             if (strcmp(map_name, "サイショームラ_1.txt") == 0) {
                 echof("町の外へ出た！\n");
-                start_map_mode("サイショームラからセカンドラ.txt", 0, 1, 13, 7, 1, -1);
+                start_map_mode("サイショームラからセカンドラ.txt", 0, 1, 13, 7, 1, -1, 0.05);
                 return 0;
             }
             break;
@@ -502,7 +502,7 @@ static int handle_event_point(char symbol, const char* map_name) {
 }
 
 /* 引数: map = 現在のマップ、key = 入力キー、has_enemy = 敵の有無、enemy_ids/enemy_count = 敵一覧 */
-int move_player(Map* map, char key, int has_enemy, const int enemy_ids[], int enemy_count) {
+int move_player(Map* map, char key, int has_enemy, const int enemy_ids[], int enemy_count, double encounter_rate) {
     int next_x = map->player_x, next_y = map->player_y;
 
     switch (key) {
@@ -524,7 +524,7 @@ int move_player(Map* map, char key, int has_enemy, const int enemy_ids[], int en
         if (!handle_event_point(map->event_id[next_y][next_x], map->current_map_name)) return 0;
     }
 
-    if (has_enemy && enemy_count > 0 && rand() % 100 < 5) {
+    if (has_enemy && enemy_count > 0 && rand() % 100 < encounter_rate * 100.0) {
         cls();
         echof("モンスターが現れた！\n");
         battle(enemy_ids[rand() % enemy_count]);
@@ -539,6 +539,7 @@ void start_map_mode(const char* filename, int spawn_id, int has_enemy, ...) {
     char key, event_symbols[32];
     const char* event_descs[32];
     int enemy_ids[64], enemy_count = 0, event_count = 0, eid;
+    double encounter_rate = 0.05;
     va_list args;
 
     va_start(args, has_enemy);
@@ -547,6 +548,7 @@ void start_map_mode(const char* filename, int spawn_id, int has_enemy, ...) {
             enemy_ids[enemy_count++] = eid;
             if (enemy_count >= 64) break;
         }
+        encounter_rate = va_arg(args, double);
     }
 
     cls();
@@ -569,7 +571,7 @@ void start_map_mode(const char* filename, int spawn_id, int has_enemy, ...) {
         set_cursor_visible(0);
         display_map(&map);
         key = (char)read_map_key();
-        if (!move_player(&map, key, has_enemy, enemy_ids, enemy_count)) break;
+        if (!move_player(&map, key, has_enemy, enemy_ids, enemy_count, encounter_rate)) break;
     }
 
     set_cursor_visible(1);

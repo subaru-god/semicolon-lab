@@ -280,11 +280,18 @@ int seek_level(void) {
     int EXP_A = 10; // レベルアップに必要な経験値の増加量
     int EXP_B = 0;   // レベル1に必要な経験値
     int EXP_K = 3;   // レベルアップに必要な経験値の増加率
+	int max_level = 100; // 最大レベル
+    int atk_min = 5;
+	int atk_max = 1000;
+	int p = 2; // 累乗成長の指数 
+    double ratio;
+
     double calculated_level;
 
     if (player_exp < EXP_B) {
         return 1;
     }
+
 
 
     // 逆算式: L = ((E - B) / A) ^ (1 / k) + 1
@@ -293,6 +300,17 @@ int seek_level(void) {
     if (player_level != (int)calculated_level) {
         player_level = (int)calculated_level;
         echof("レベルが %d に上がった！\n", player_level);
+		player_mp = player_max_mp;
+		player_rest_hp = player_max_hp;
+		echof("HPとMPが全回復しました。\n");
+
+
+
+        // 進行度の割合 (0.0 ～ 1.0) を計算 ※doubleにキャストして整数除算を防ぐ
+        ratio = (double)(player_level - 1) / (double)(max_level - 1);
+
+        // 累乗成長式の計算
+        atk_min + (atk_max - atk_min) * pow(ratio, p);
     }
 
     // 小数点以下を切り捨てて整数（レベル）にする

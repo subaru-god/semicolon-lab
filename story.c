@@ -189,7 +189,7 @@ int debug(void) {
                 if (i < 64) i++;
                 else { printf("‚±‚êˆÈã“o˜^‚Å‚«‚Ü‚¹‚ñB\n"); break; }
             }
-            start_map_mode(cache_str, 0, 1, cache3[0], cache3[1], cache3[2], cache3[3], cache3[4], cache3[5], cache3[6], cache3[7], cache3[8], cache3[9], -1);
+            start_map_mode(cache_str, 0, 1, cache3[0], cache3[1], cache3[2], cache3[3], cache3[4], cache3[5], cache3[6], cache3[7], cache3[8], cache3[9], -1, 0.05);
         }
         else {
             start_map_mode(cache_str, 0, 0);

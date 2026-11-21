@@ -1,6 +1,9 @@
 # Visual Studio
 .vs/
 x64/
+.vscode/
+.git/
+ÉZÉ~ÉRÉçÉì/
 *.obj
 *.tds
 *.exe
