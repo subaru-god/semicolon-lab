@@ -3,6 +3,10 @@
 #define TILE_WALL   1
 #define TILE_EVENT  2
 
+#define MAP_FIRST_TOWN "サイショームラ_1.txt"
+#define MAP_SECOND_TOWN "セカンドラ.txt"
+#define MAP_FIRST_TO_SECOND "サイショームラからセカンドラ.txt"
+
 #define MAX_EVENT_DESCS 32
 #define MAX_DESC_LEN    128
 
@@ -383,7 +387,7 @@ static int handle_event_point(char symbol, const char* map_name) {
             break;
 
         case 'H':
-            if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
+            if (strcmp(map_name, MAP_FIRST_TO_SECOND) == 0) {
                 echof("人がたっている...\n内容は未定だ！\n");
                 cls();
             }
@@ -391,34 +395,34 @@ static int handle_event_point(char symbol, const char* map_name) {
 
         case 'I':
             echof("アイテムショップへ入った！\n");
-            if (strcmp(map_name, "サイショームラ_1.txt") == 0) {
+            if (strcmp(map_name, MAP_FIRST_TOWN) == 0) {
                 item_shop(1, 2, 3, -1);
             }
             break;
 
         case 'J':
-            if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
+            if (strcmp(map_name, MAP_FIRST_TO_SECOND) == 0) {
                 echof("人がたっている...\n内容は未定だ！\n");
                 cls();
             }
             break;
 
         case 'K':
-            if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
+            if (strcmp(map_name, MAP_FIRST_TO_SECOND) == 0) {
                 echof("人がたっている...\n内容は未定だ！\n");
                 cls();
             }
             break;
 
         case 'L':
-            if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
+            if (strcmp(map_name, MAP_FIRST_TO_SECOND) == 0) {
                 echof("人がたっている...\n内容は未定だ！\n");
                 cls();
             }
             break;
 
         case 'N':
-            if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
+            if (strcmp(map_name, MAP_FIRST_TO_SECOND) == 0) {
                 if (story_progress[0] == 0) {
                     echof("誰かが仁王立ちで立っている。");
                     echof("誰かが話しかけてきた。");
@@ -435,7 +439,7 @@ static int handle_event_point(char symbol, const char* map_name) {
                         echof("残りの四天王に、この使命は託すとしよう");
                         echof("さらばだ");
                         cls();
-                        start_map_mode("セカンドラ.txt", 0, 0);
+                        start_map_mode(MAP_SECOND_TOWN, 0, 0);
                         return 0;
                     }
                     else {
@@ -451,43 +455,43 @@ static int handle_event_point(char symbol, const char* map_name) {
             break;
 
         case 'Q':
-            if (strcmp(map_name, "サイショームラ_1.txt") == 0) {
+            if (strcmp(map_name, MAP_FIRST_TOWN) == 0) {
                 echof("町の外へ出た！\n");
-                start_map_mode("サイショームラからセカンドラ.txt", 0, 1, 13, 7, 1, -1, 0.05);
+                start_map_mode(MAP_FIRST_TO_SECOND, 0, 1, 13, 7, 1, -1, 0.10);
                 return 0;
             }
             break;
 
         case 'T':
-            if (strcmp(map_name, "サイショームラ_1.txt") == 0) {
+            if (strcmp(map_name, MAP_FIRST_TO_SECOND) == 0) {
                 echof("看板がある...\n内容は未定\n");
                 cls();
             }
             break;
 
         case 'V':
-            if (strcmp(map_name, "サイショームラからセカンドラ.txt") == 0) {
+            if (strcmp(map_name, MAP_FIRST_TO_SECOND) == 0) {
                 echof("サイショームラへ入った！\n");
-                start_map_mode("サイショームラ_1.txt", 1, 0);
+                start_map_mode(MAP_FIRST_TOWN, 1, 0);
                 return 0;
-            }else if(strcmp(map_name, "セカンドラ.txt") == 0) {
+            }else if(strcmp(map_name, MAP_SECOND_TOWN) == 0) {
                 cls();
                 echof("セカンドラをでた！\n");
-                start_map_mode("サイショームラからセカンドラ.txt", 0, 0);
+                start_map_mode(MAP_FIRST_TO_SECOND, 0, 0);
                 return 0;
             }
             break;
 
         case 'W':
             echof("武器屋へ入った！\n");
-            if (strcmp(map_name, "サイショームラ_1.txt") == 0){
+            if (strcmp(map_name, MAP_FIRST_TOWN) == 0){
                 weapon_shop(1, 2, 3, -1);
             }
             break;
 
         case 'Y':
             echof("よろず屋へ入った！\n");
-            if (strcmp(map_name, "サイショームラ_1.txt") == 0) {
+            if (strcmp(map_name, MAP_FIRST_TOWN) == 0) {
                 all_shop(1, 2, 3, -1, 1, 2, 3, -1);
             }
             break;
