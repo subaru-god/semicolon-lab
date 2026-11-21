@@ -1,11 +1,18 @@
 #include "header.h"
 
 // 合成音声を流す関数 (getchar()がある)
+#ifdef _WIN32
+static HANDLE echof_process = NULL;
+#endif
+
 static void echof_v(const char* format, va_list args, int wait_for_input) {
 #ifdef _WIN32
     char text_buffer[1024];
-    char clean_buffer[1024];
-    char command_buffer[2048];
+    char clean_buffer[2048];
+    char command_buffer[4096];
+    STARTUPINFOA startup_info;
+    PROCESS_INFORMATION process_info;
+    DWORD process_state;
     int i, j = 0;
 
     // 1. フォーマット文字列の組み立て
@@ -28,18 +35,44 @@ static void echof_v(const char* format, va_list args, int wait_for_input) {
 
     // 4. PowerShellを呼び出して読み上げ（-Command ではなくスクリプトブロック渡しで文字化け・途切りを防止）
 // 話速($s.Rate) と 音量($s.Volume) を設定する例
-    sprintf(command_buffer,
-        "start \"\" /b powershell -NoProfile -ExecutionPolicy Bypass -Command "
-        "\"Add-Type -AssemblyName System.Speech; "
-        "$s = New-Object System.Speech.Synthesis.SpeechSynthesizer; "
-        "$s.Rate = 3; "     // 話速: -10 ～ 10 (例: 2 で少し早口)
-        "$s.Volume = 100; "  // 音量: 0 ～ 100
-        "$s.Speak('%s');\" >nul 2>&1",
-        clean_buffer);
+	if (echof_process != NULL) {
+		process_state = 0;
+		if (GetExitCodeProcess(echof_process, &process_state) && process_state == STILL_ACTIVE) {
+			TerminateProcess(echof_process, 0);
+		}
+		CloseHandle(echof_process);
+		echof_process = NULL;
+	}
 
-    if (system(command_buffer) != 0) {
-        log_error("AUDIO", "failed to start speech command");
-    }
+	sprintf(command_buffer,
+		"powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "
+		"\"Add-Type -AssemblyName System.Speech; "
+		"$s = New-Object System.Speech.Synthesis.SpeechSynthesizer; "
+		"$s.Rate = 3; $s.Volume = 100; $s.Speak('%s');\"",
+		clean_buffer);
+
+	memset(&startup_info, 0, sizeof(startup_info));
+	startup_info.cb = sizeof(startup_info);
+	memset(&process_info, 0, sizeof(process_info));
+
+	if (CreateProcessA(
+			NULL,
+			command_buffer,
+			NULL,
+			NULL,
+			FALSE,
+			CREATE_NO_WINDOW,
+			NULL,
+			NULL,
+			&startup_info,
+			&process_info)) {
+		echof_process = process_info.hProcess;
+		CloseHandle(process_info.hThread);
+	}
+	else {
+		log_error("AUDIO", "failed to start speech command: error %lu", GetLastError());
+	}
+
     // 画面には元のテキスト（改行あり）を表示
     printf("%s", text_buffer);
 
@@ -308,8 +341,12 @@ int seek_level(void) {
 
         // 累乗成長式の計算
         ap = atk_min + (atk_max - atk_min) * pow(ratio, p);
-        change(current_weapon_id);
-        sum_ap =  + ap;
+        if (current_weapon_id > 0) {
+            change(current_weapon_id);
+        }
+        else {
+            sum_ap = ap;
+        }
 
 		echof("攻撃力が %d に上がった！\n", ap);
 

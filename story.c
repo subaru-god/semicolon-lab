@@ -83,7 +83,8 @@ void prologue(void) {
     echof("だからあなたの腕試しをしておきたいの。");
     ap = 20;
     sum_ap = ap;
-    can_item[1] = 1;
+    player_max_hp = 100;
+    player_rest_hp = player_max_hp;
     stop_bgm();
     play_bgm("battle.mp3");
     result = battle(20);
@@ -116,7 +117,7 @@ int story_1(void) {
     echof("\n木の棒を受け取りました。");
     can_weapon[1] = 1;
     echof("木の棒は装備品です。装備してみましょう");
-    change(1);
+    change(0);
     echof("お母さんのお守りを受け取りました");
     play_se("get_item.mp3");
     echof("\nただのお守りだけどきっとあなたを守ってくれるはずよ。");
