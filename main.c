@@ -14,7 +14,7 @@ int ap;
 int sum_ap;
 int m_ap;
 int m_sum_ap;
-int current_weapon_id;
+int current_weapon_id = 0;
 int can_magics[1000];
 int can_weapon[1000];
 int can_item[1000];

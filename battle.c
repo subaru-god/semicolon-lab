@@ -45,7 +45,7 @@ static int load_enemy_exp(int target_id) {
     char* comma;
     int field_index;
     int id;
-    int exp = 0;
+    int exp;
 
     if (!fp) return 0;
     if (!read_csv_header(fp, "敵.csv", line, sizeof(line))) return 0;
@@ -106,7 +106,7 @@ extern int level_of_story;
 extern int current_weapon_id;
 extern int player_max_hp;
 extern int player_rest_hp;
-extern void change(void);
+extern void change(int weapon_id);
 */
 
 /* 引数: elem_id = 属性ID、out_elem = 属性関係データの格納先 */
@@ -567,7 +567,7 @@ int battle(int e_id) {
             break;
 
         case '4':
-            change();
+            change(0);
             break;
 
         case '5':
@@ -595,9 +595,13 @@ int battle(int e_id) {
         echof("\n%sは倒れてしまった...\n", name);
         cls();
         echof("ゲームオーバーになりました。");
+		cache = (int)money / 3;
+		echof("所持金が%dG　から　になった。", money, cache);
+		money = cache;
         echof("トピック：レベル上げをしてまた挑んでみよう。");
         cls();
         player_rest_hp = player_max_hp;
+		player_mp = player_max_mp;
         return 0;
     }
 }
