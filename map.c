@@ -5,6 +5,7 @@
 
 #define MAP_FIRST_TOWN "サイショームラ_1.txt"
 #define MAP_SECOND_TOWN "セカンドラ.txt"
+#define MAP_THIRD_TOWN "サードリィ.txt"
 #define MAP_FIRST_TO_SECOND "サイショームラからセカンドラ.txt"
 
 #define MAX_EVENT_DESCS 32

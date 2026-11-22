@@ -339,7 +339,9 @@ int seek_level(void) {
         // is“x‚ÌŠ„‡ (0.0 ` 1.0) ‚ðŒvŽZ ¦double‚ÉƒLƒƒƒXƒg‚µ‚Ä®”œŽZ‚ð–h‚®
         ratio = (double)(player_level - 1) / (double)(max_level - 1);
 
-        // —Ýæ¬’·Ž®‚ÌŒvŽZ
+        /* —Ýæ¬’·Ž®‚ÌŒvŽZ
+		 * UŒ‚—Í = atk_min + (atk_max - atk_min) * (ratio ^ p)
+         */
         ap = atk_min + (atk_max - atk_min) * pow(ratio, p);
         if (current_weapon_id > 0) {
             change(current_weapon_id);
