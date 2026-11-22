@@ -72,12 +72,23 @@ static void log_error(const char* category, const char* format, ...) {
 static void report_file_open_error(const char* path);
 
 static FILE* project_fopen(const char* path, const char* mode) {
+    char resolved_path[4096];
+    FILE* fp;
+    const char* open_path = path;
+    size_t path_len = strlen(path);
+
+    if (path_len >= 4 && strcmp(path + path_len - 4, ".csv") == 0 &&
+        strncmp(path, "csv/", 4) != 0 && strncmp(path, "csv\\", 4) != 0) {
+        snprintf(resolved_path, sizeof(resolved_path), "csv/%s", path);
+        open_path = resolved_path;
+    }
+
     #if defined(__unix__) || defined(__APPLE__)
         iconv_t converter = iconv_open("UTF-8", "CP932");
         char utf8_path[4096];
-        char* input = (char*)path;
+        char* input = (char*)open_path;
         char* output = utf8_path;
-        size_t input_left = strlen(path);
+        size_t input_left = strlen(open_path);
         size_t output_left = sizeof(utf8_path) - 1;
 
         if (converter == (iconv_t)-1) {
@@ -98,11 +109,11 @@ static FILE* project_fopen(const char* path, const char* mode) {
         *output = '\0';
         iconv_close(converter);
         FILE* fp = fopen(utf8_path, mode);
-        if (fp == NULL) report_file_open_error(path);
+        if (fp == NULL) report_file_open_error(open_path);
         return fp;
     #else
-        FILE* fp = fopen(path, mode);
-        if (fp == NULL) report_file_open_error(path);
+        fp = fopen(open_path, mode);
+        if (fp == NULL) report_file_open_error(open_path);
         return fp;
     #endif
 }
