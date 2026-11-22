@@ -3,10 +3,10 @@
 #define TILE_WALL   1
 #define TILE_EVENT  2
 
-#define MAP_FIRST_TOWN "サイショームラ_1.txt"
-#define MAP_SECOND_TOWN "セカンドラ.txt"
-#define MAP_THIRD_TOWN "サードリィ.txt"
-#define MAP_FIRST_TO_SECOND "サイショームラからセカンドラ.txt"
+#define MAP_FIRST_TOWN "map_data/サイショームラ_1.txt"
+#define MAP_SECOND_TOWN "map_data/セカンドラ.txt"
+#define MAP_THIRD_TOWN "map_data/サードリィ.txt"
+#define MAP_FIRST_TO_SECOND "map_data/サイショームラからセカンドラ.txt"
 
 #define MAX_EVENT_DESCS 32
 #define MAX_DESC_LEN    128
